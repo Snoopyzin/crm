@@ -138,21 +138,10 @@
                 $lit = [false, false, false, true, true, true];
                 $startIndex = max(0, $currentStep - 1);
 
-                // One flat-style wheel: dark tire, light rim, hub and lug
-                // dots on the spinning group (so the rotation is visible).
-                $wheel = function (float $x) {
-                    $lugs = '';
-
-                    foreach ([0, 72, 144, 216, 288] as $angle) {
-                        $lugs .= '<circle cx="0" cy="-2.5" r=".55" fill="#8f979e" transform="rotate('.$angle.')"></circle>';
-                    }
-
-                    return '<g transform="translate('.$x.',45.2)">'
-                        .'<circle r="6.8" fill="#2b2c30"></circle>'
-                        .'<circle r="4.1" fill="#d3d7da"></circle>'
-                        .'<g class="wheel-spin"><circle r="4.1" fill="none"></circle>'.$lugs.'<circle r="1.3" fill="#a3aab0"></circle></g>'
-                        .'</g>';
-                };
+                // Caminhão do cliente: cor, marca e tipo vêm do cadastro do veículo.
+                $veiculo = $serviceOrder->vehicle;
+                $silhueta = \Webkul\ServiceOrder\Services\TruckSvg::silhueta($veiculo->marca ?? null, $veiculo->modelo ?? null, $veiculo->tipo ?? null);
+                $caminhaoSvg = \Webkul\ServiceOrder\Services\TruckSvg::render($veiculo->cor ?? null, $veiculo->marca ?? null, $silhueta);
             @endphp
 
             <div class="hero">
@@ -219,68 +208,12 @@
                             </g>
                         </g>
 
-                        {{-- Truck (flat style, faces right). Local units: 0..130 wide, ground at y=52. --}}
-                        <g id="truck-g" transform="translate(24,45)">
+                        {{-- Caminhão do cliente (vista lateral, vira para a direita). Unidades locais: 0..148 de largura, chão em y=60. --}}
+                        <g id="truck-g" transform="translate(8,41)">
                             <g class="bob-wrap">
-                            <g transform="scale(1.5)">
-                                <ellipse cx="64" cy="52" rx="64" ry="2.4" fill="#000000" opacity=".18"></ellipse>
-
-                                {{-- Container trailer --}}
-                                <rect x="0" y="4" width="84" height="32" fill="#e8eaec"></rect>
-                                <rect x="0" y="4" width="84" height="2.2" fill="#d6d9dc"></rect>
-                                <g fill="#cdd1d5">
-                                    @for ($rib = 4; $rib < 82; $rib += 4)
-                                        <rect x="{{ $rib }}" y="7.6" width="1.2" height="26.4"></rect>
-                                    @endfor
+                                <g transform="scale(1.45)">
+                                    {!! $caminhaoSvg !!}
                                 </g>
-                                <rect x="0" y="34" width="84" height="2" fill="#d6d9dc"></rect>
-                                <rect x="24" y="16.4" width="36" height="8.6" rx="1.4" fill="#e8eaec"></rect>
-                                <text x="42" y="22.6" font-size="5.4" font-weight="800" fill="#1f7fe0" text-anchor="middle" letter-spacing=".4" font-family="Roboto, sans-serif">VOLMASTER TECH</text>
-
-                                {{-- Chassis, landing leg, side guard --}}
-                                <rect x="0" y="36" width="122" height="4" rx="1" fill="#36495a"></rect>
-                                <rect x="8" y="36" width="26" height="1.3" fill="#5d7080"></rect>
-                                <rect x="2" y="40" width="46" height="1.4" fill="#2a3846"></rect>
-                                <rect x="56" y="40" width="1.4" height="6.8" fill="#36495a"></rect>
-                                <rect x="54" y="46.4" width="5.4" height="1.2" rx=".4" fill="#36495a"></rect>
-
-                                {{-- Cab back panel + exhaust --}}
-                                <rect x="86" y="8" width="3.4" height="28" rx=".6" fill="#2f3b47"></rect>
-                                <path d="M84.3,32 V1 Q84.3,-2 87.3,-2 H88.6" fill="none" stroke="#8a96a0" stroke-width="1.6" stroke-linecap="round"></path>
-                                <g id="exhaust" fill="#c3ccd4">
-                                    <circle cx="89" cy="-2.2" r="1.8"></circle>
-                                    <circle cx="89" cy="-2.2" r="1.8"></circle>
-                                    <circle cx="89" cy="-2.2" r="1.8"></circle>
-                                </g>
-
-                                {{-- Cab --}}
-                                <path d="M90,36 V13 Q90,10 93,10 H107 Q120,10 123.4,21 L124.6,36 Z" fill="#1f7fe0"></path>
-                                <path d="M90.2,13 Q90.4,10 93,10 H107 Q117,10 121.2,16 L119.6,16.9 Q115.6,12.7 107,12.7 H90.2 Z" fill="#1765bd"></path>
-                                <rect x="97" y="18" width="4.6" height="6.4" rx=".8" fill="#4c6070" stroke="#e9eef2" stroke-width=".5"></rect>
-                                <line x1="104" y1="17" x2="104" y2="35" stroke="#1765bd" stroke-width=".6"></line>
-                                <path d="M107,17.5 L118.6,17.5 L121.6,27 L107,27 Z" fill="#4c6070" stroke="#e9eef2" stroke-width=".6"></path>
-                                <path d="M109,18.6 L111.6,18.6 L109,24 Z" fill="#ffffff" opacity=".25"></path>
-                                <rect x="105.4" y="28.6" width="2.6" height=".8" rx=".3" fill="#1765bd"></rect>
-                                <rect x="90" y="31" width="34.6" height="1" fill="#1765bd"></rect>
-
-                                <ellipse id="headlight-glow" cx="128.6" cy="30.2" rx="4.6" ry="2.2" fill="#ffe08a" opacity=".55"></ellipse>
-                                <rect x="122.4" y="29" width="3" height="2.4" rx=".8" fill="#ffb547"></rect>
-
-                                <rect x="114" y="36" width="12.6" height="3" rx="1" fill="#d6dade"></rect>
-                                <rect x="92" y="37.4" width="12" height="5.6" rx="1.4" fill="#d3d7da"></rect>
-                                <rect x="92.6" y="38.1" width="10.8" height="1.2" rx=".5" fill="#eef1f3"></rect>
-                                <rect x="106" y="38" width="5" height="1.1" rx=".4" fill="#9aa3ab"></rect>
-
-                                {{-- Fenders + wheels (3 trailer axles, drive, steer) --}}
-                                <path d="M2,46 Q2,37.6 10,37.6 H40 Q48,37.6 48,46" fill="none" stroke="#1f2226" stroke-width="2"></path>
-                                <path d="M66,46 Q66,37.6 74,37.6 Q82,37.6 82,46" fill="none" stroke="#1f2226" stroke-width="2"></path>
-                                <path d="M106,46 Q106,37.6 114,37.6 Q122,37.6 122,46" fill="none" stroke="#1f2226" stroke-width="2"></path>
-                                {!! $wheel(10) !!}
-                                {!! $wheel(25) !!}
-                                {!! $wheel(40) !!}
-                                {!! $wheel(74) !!}
-                                {!! $wheel(114) !!}
-                            </g>
                             </g>
                         </g>
                     </svg>
@@ -315,9 +248,9 @@
                     // it drives from the previous stage to the current one on
                     // load, and keeps "rolling" (wheels, road, smoke) until the
                     // last stage, where it parks.
-                    var TRACK_START = 24;
-                    var TRACK_END = 180;
-                    var TRUCK_Y = 45;
+                    var TRACK_START = 8;
+                    var TRACK_END = 168;
+                    var TRUCK_Y = 41;
                     var DRIVE_MS = 1800;
 
                     var lit = @json($lit);

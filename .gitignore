@@ -35,3 +35,4 @@ local.properties
 /RETOMAR-TRABALHO.md
 promo/fotos/*.jpg
 promo/fotos/seq-*/
+promo/caminhao/node_modules/
