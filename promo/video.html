@@ -28,6 +28,10 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 .row .st{margin-left:auto;display:flex;align-items:center}
 .row.done{color:var(--ink)}.row.done .st{color:var(--ok)}
 .row.act{background:linear-gradient(135deg,var(--blue),#0A6FB0);color:#fff;box-shadow:0 26px 50px -18px rgba(14,144,217,.85)}
+.tk{position:absolute;left:30px;right:30px;height:128px;border-radius:26px;background:#fff;border:2px solid #E6ECF4;display:flex;align-items:center;gap:22px;padding:0 24px;box-shadow:0 14px 30px -22px rgba(7,26,51,.4)}
+.photo{position:absolute;left:60px;top:560px;width:960px;height:1040px;border-radius:48px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(7,26,51,.5);display:none;opacity:0}
+.photo .pin{position:absolute;inset:0;background-size:cover;background-position:center;transform-origin:50% 40%}
+.photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,26,51,0) 55%,rgba(7,26,51,.35))}
 .mono{font-family:'Chakra Petch',sans-serif}
 .pill{display:inline-block;border-radius:999px;padding:10px 24px;font-weight:700;font-size:28px}
 .kpi{position:absolute;width:465px;height:250px;padding:34px 38px}
@@ -115,11 +119,151 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
     </div>
   </div>
 
-  <!-- CENA 6: fechamento -->
+  <!-- CENA 6: celular (mecânico) -->
   <div class="sc" id="s6">
-    <img id="logo6" src="logo-branco.svg" style="position:absolute;left:290px;top:560px;width:500px">
-    <div class="h w" id="t6" style="position:absolute;left:60px;top:1000px;width:960px;text-align:center;font-size:104px"><span class="word">Tudo</span> <span class="word">em</span> <span class="word">um</span><br><b><span class="word">só</span> <span class="word">lugar.</span></b></div>
-    <div id="url6" class="mono" style="position:absolute;left:0;top:1420px;width:1080px;text-align:center;font-size:50px;font-weight:600;letter-spacing:.06em;color:#5DB8EE;opacity:0">volmastercrm.com</div>
+    <div class="h" id="t6" style="position:absolute;left:60px;top:150px;width:960px"><span class="word">No</span> <b><span class="word">celular.</span></b></div>
+    <div id="cap6" style="position:absolute;left:60px;top:330px;width:900px;font-size:46px;line-height:1.3;color:var(--mut);opacity:0">O mecânico registra o serviço <b style="color:var(--ink)">na hora</b>, direto da oficina.</div>
+    <div id="halo6" style="position:absolute;left:-40px;top:760px;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(14,144,217,.22),rgba(14,144,217,0) 70%);opacity:0"></div>
+    <div id="ph6" class="photo"><div class="pin"></div></div>
+    <svg id="mech" viewBox="0 0 520 1100" style="position:absolute;left:20px;top:620px;width:520px;height:1100px;opacity:0;overflow:visible">
+      <ellipse cx="260" cy="1062" rx="190" ry="24" fill="rgba(7,26,51,.14)"/>
+      <!-- pernas -->
+      <rect x="172" y="690" width="80" height="350" rx="30" fill="#0B2447"/>
+      <rect x="268" y="690" width="80" height="350" rx="30" fill="#0B2447"/>
+      <path d="M160 1030h100a14 14 0 0 1 14 14v8a14 14 0 0 1-14 14H150a14 14 0 0 1-14-14v-6a16 16 0 0 1 24-16z" fill="#101820"/>
+      <path d="M260 1030h100a16 16 0 0 1 24 16v6a14 14 0 0 1-14 14H266a14 14 0 0 1-14-14v-8a14 14 0 0 1 8-14z" fill="#101820"/>
+      <!-- corpo -->
+      <rect x="150" y="395" width="220" height="360" rx="56" fill="#CFE3F4"/>
+      <rect x="182" y="520" width="156" height="240" rx="22" fill="#0B3E7A"/>
+      <rect x="192" y="400" width="34" height="140" rx="12" fill="#0B3E7A"/>
+      <rect x="294" y="400" width="34" height="140" rx="12" fill="#0B3E7A"/>
+      <rect x="214" y="566" width="92" height="64" rx="12" fill="#0E90D9"/>
+      <path d="M244 586l16 9 16-9M260 595v22" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- pescoço e cabeça -->
+      <rect x="234" y="340" width="52" height="70" rx="18" fill="#B27B52"/>
+      <circle cx="188" cy="300" r="15" fill="#C99467"/><circle cx="332" cy="300" r="15" fill="#C99467"/>
+      <circle cx="260" cy="292" r="74" fill="#D3A074"/>
+      <path d="M184 282a76 76 0 0 1 152 0z" fill="#0B2447"/>
+      <path d="M176 282h168a8 8 0 0 1 8 8c0 8-8 12-20 12H188c-12 0-20-4-20-12a8 8 0 0 1 8-8z" fill="#071A33"/>
+      <polygon points="260,236 276,245 276,263 260,272 244,263 244,245" fill="#0E90D9"/>
+      <path d="M252 256l8 12 8-12" stroke="#071A33" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="233" cy="318" r="6.5" fill="#101820"/><circle cx="287" cy="318" r="6.5" fill="#101820"/>
+      <path d="M222 304q11-8 22 0M276 304q11-8 22 0" stroke="#3A2A20" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M240 344q20-8 40 0q-20 8-40 0z" fill="#3A2A20"/>
+      <path d="M236 352q24 22 48 0" stroke="#101820" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- braço com a chave -->
+      <path d="M166 430 L132 620 L120 735" stroke="#CFE3F4" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="120" cy="760" r="34" fill="#D3A074"/>
+      <g transform="translate(120 770) rotate(14)"><rect x="-10" y="-6" width="20" height="150" rx="10" fill="#8EA0B8"/><circle cy="156" r="30" fill="#8EA0B8"/><rect x="-11" y="150" width="22" height="34" fill="#F5F8FD"/></g>
+      <!-- braço com o celular -->
+      <g id="mechArm">
+        <path d="M354 430 L418 610 L338 566" stroke="#CFE3F4" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <g transform="rotate(-8 330 540)">
+          <rect x="284" y="448" width="98" height="170" rx="16" fill="#101820"/>
+          <rect x="291" y="458" width="84" height="150" rx="9" fill="#0B2447"/>
+          <rect x="299" y="470" width="68" height="12" rx="6" fill="#0E90D9"/>
+          <rect x="299" y="492" width="68" height="22" rx="7" fill="#1F9D6B"/>
+          <rect x="299" y="522" width="68" height="22" rx="7" fill="#2E4059"/>
+          <rect x="299" y="552" width="68" height="22" rx="7" fill="#2E4059"/>
+        </g>
+        <circle cx="322" cy="580" r="34" fill="#D3A074"/>
+        <ellipse cx="364" cy="560" rx="14" ry="26" fill="#D3A074" transform="rotate(-20 364 560)"/>
+      </g>
+    </svg>
+    <div id="phone6w" style="position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:0 0;pointer-events:none">
+    <div id="phone6" style="position:absolute;left:570px;top:620px;width:460px;height:950px;border-radius:78px;background:#101820;padding:14px;opacity:0;box-shadow:0 50px 90px -30px rgba(7,26,51,.55)">
+      <div style="width:100%;height:100%;border-radius:64px;background:#F5F8FD;padding:40px 30px 26px;position:relative;overflow:hidden">
+        <div class="mono" style="font-size:44px;font-weight:700">Minhas tarefas</div>
+        <div style="font-size:24px;color:var(--mut);margin-top:6px">Oficina Alvorada · hoje</div>
+        <div style="display:flex;justify-content:space-between;font-size:23px;font-weight:600;margin-top:28px"><span id="prog6t">0 de 3 concluídas</span></div>
+        <div style="height:12px;border-radius:6px;background:#DFE7F1;margin-top:12px;overflow:hidden"><div id="prog6" style="height:100%;width:0;background:linear-gradient(90deg,#0E90D9,#1F9D6B);border-radius:6px"></div></div>
+        <div id="tk0" class="tk"></div><div id="tk1" class="tk"></div><div id="tk2" class="tk"></div>
+        <div id="btn6" style="position:absolute;left:30px;right:30px;bottom:110px;height:92px;border-radius:30px;background:linear-gradient(135deg,#0E90D9,#0A6FB0);color:#fff;font-size:32px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 22px 40px -18px rgba(14,144,217,.9)">Concluir serviço</div>
+        <div style="position:absolute;left:0;right:0;bottom:0;height:84px;border-top:2px solid #E6ECF4;background:#fff;display:flex;justify-content:space-around;align-items:center;color:#8EA0B8">
+          <svg class="ic" viewBox="0 0 24 24" style="color:#0E90D9;width:42px;height:42px"><path d="M9 3h6v3H9z"/><path d="M15 4.5h2a2 2 0 0 1 2 2V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6.5a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+          <svg class="ic" viewBox="0 0 24 24" style="width:42px;height:42px"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+          <svg class="ic" viewBox="0 0 24 24" style="width:42px;height:42px"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- CENA 7: computador (dono) -->
+  <div class="sc" id="s7">
+    <div class="h" id="t7" style="position:absolute;left:60px;top:150px;width:960px"><span class="word">No</span> <b><span class="word">computador.</span></b></div>
+    <div id="cap7" style="position:absolute;left:60px;top:330px;width:900px;font-size:46px;line-height:1.3;color:var(--mut);opacity:0">O dono acompanha <b style="color:var(--ink)">tudo</b>, de qualquer lugar.</div>
+    <div id="chipA" class="card" style="left:60px;top:560px;width:560px;height:110px;border-radius:30px;display:flex;align-items:center;gap:22px;padding:0 30px;font-size:30px;font-weight:600;opacity:0"><span style="width:20px;height:20px;border-radius:50%;background:var(--ok);flex:none"></span>Caixa do dia fechado</div>
+    <div id="chipB" class="card" style="left:130px;top:700px;width:600px;height:110px;border-radius:30px;display:flex;align-items:center;gap:22px;padding:0 30px;font-size:30px;font-weight:600;opacity:0"><span style="width:20px;height:20px;border-radius:50%;background:var(--warn);flex:none"></span>2 alçadas aguardando você</div>
+    <div id="ph7" class="photo"><div class="pin"></div></div>
+    <!-- monitor -->
+    <div id="mon7w" style="position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:0 0;pointer-events:none">
+    <div id="mon7" style="position:absolute;left:20px;top:960px;width:693px;height:540px;opacity:0"><div style="position:absolute;left:0;top:0;width:770px;height:600px;transform:scale(.9);transform-origin:0 0">
+      <div style="position:absolute;left:0;top:0;width:770px;height:500px;border-radius:30px;background:#101820;padding:14px;box-shadow:0 40px 80px -30px rgba(7,26,51,.55)">
+        <div style="width:100%;height:100%;border-radius:20px;background:#EDF2F8;display:flex;overflow:hidden">
+          <div style="width:120px;background:linear-gradient(180deg,#0B2447,#071A33);padding:20px 0;display:flex;flex-direction:column;align-items:center;gap:22px;color:#7F97B6">
+            <img src="logo-branco.svg" style="width:86px;margin-bottom:6px">
+            <svg class="ic" viewBox="0 0 24 24" style="color:#fff;width:34px;height:34px"><rect x="3.5" y="3.5" width="7" height="8" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.5"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" style="width:34px;height:34px"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" style="width:34px;height:34px"><path d="M5 3v18l2.5-1.5L10 21l2-1.5 2 1.5 2.5-1.5L19 21V3l-2.5 1.5L14 3l-2 1.5L10 3 7.5 4.5z"/><path d="M9 9h6M9 13h6"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" style="width:34px;height:34px"><rect x="4.5" y="12" width="3.5" height="8" rx="1"/><rect x="10.25" y="4" width="3.5" height="16" rx="1"/><rect x="16" y="9" width="3.5" height="11" rx="1"/></svg>
+          </div>
+          <div style="flex:1;padding:22px 24px">
+            <div class="mono" style="font-size:30px;font-weight:700">Painel do Dono</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px">
+              <div style="background:#fff;border-radius:16px;padding:14px 16px"><div style="font-size:15px;font-weight:600;color:var(--mut);letter-spacing:.05em">FATURAMENTO</div><div class="mono" id="m1" style="font-size:28px;font-weight:700;margin-top:6px">R$ 0</div></div>
+              <div style="background:#fff;border-radius:16px;padding:14px 16px"><div style="font-size:15px;font-weight:600;color:var(--mut);letter-spacing:.05em">TICKET MÉDIO</div><div class="mono" id="m2" style="font-size:28px;font-weight:700;margin-top:6px">R$ 0</div></div>
+              <div style="background:#fff;border-radius:16px;padding:14px 16px"><div style="font-size:15px;font-weight:600;color:var(--mut);letter-spacing:.05em">NO ALVO</div><div class="mono" id="m3" style="font-size:28px;font-weight:700;margin-top:6px;color:var(--ok)">0%</div></div>
+            </div>
+            <div style="background:#fff;border-radius:16px;margin-top:14px;padding:14px 16px;height:226px">
+              <svg viewBox="0 0 560 190" style="width:100%;height:100%;overflow:visible">
+                <defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E90D9" stop-opacity=".3"/><stop offset="1" stop-color="#0E90D9" stop-opacity="0"/></linearGradient><clipPath id="cp2"><rect id="cpr2" x="0" y="-10" width="0" height="220"/></clipPath></defs>
+                <g stroke="#E6ECF4" stroke-width="2"><path d="M0 30H560M0 85H560M0 140H560"/></g>
+                <g clip-path="url(#cp2)"><path d="M0 170 C60 165 90 150 135 142 S220 120 265 108 S350 80 395 62 S490 30 560 14 V190 H0Z" fill="url(#g2)"/><path d="M0 170 C60 165 90 150 135 142 S220 120 265 108 S350 80 395 62 S490 30 560 14" fill="none" stroke="#0E90D9" stroke-width="6" stroke-linecap="round"/></g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;left:325px;top:500px;width:120px;height:62px;background:linear-gradient(180deg,#B7C4D6,#8EA0B8)"></div>
+      <div style="position:absolute;left:230px;top:556px;width:310px;height:26px;border-radius:13px;background:#8EA0B8"></div>
+    </div></div>
+    </div>
+    <svg id="owner" viewBox="0 0 420 800" style="position:absolute;left:655px;top:655px;width:483px;height:920px;opacity:0;overflow:visible">
+      <rect x="62" y="330" width="296" height="470" rx="70" fill="#1B3A63"/>
+      <rect x="98" y="335" width="224" height="470" rx="64" fill="#0E90D9"/>
+      <path d="M170 336l40 46 40-46z" fill="#F5F8FD"/>
+      <polygon points="262,430 278,439 278,457 262,466 246,457 246,439" fill="#071A33"/>
+      <rect x="186" y="272" width="48" height="72" rx="18" fill="#C58F68"/>
+      <circle cx="140" cy="214" r="14" fill="#E5B48C"/><circle cx="280" cy="214" r="14" fill="#E5B48C"/>
+      <circle cx="210" cy="208" r="72" fill="#EDBE98"/>
+      <path d="M138 206Q134 128 210 126Q286 128 282 206Q268 164 210 162Q152 164 138 206Z" fill="#2B2F36"/>
+      <g fill="none" stroke="#101820" stroke-width="5"><circle cx="182" cy="216" r="21"/><circle cx="238" cy="216" r="21"/><path d="M203 214h14"/></g>
+      <circle cx="176" cy="217" r="5.5" fill="#101820"/><circle cx="232" cy="217" r="5.5" fill="#101820"/>
+      <path d="M186 252q24 22 48 0" stroke="#101820" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M142 232Q150 294 210 300Q270 294 278 232Q266 272 210 276Q154 272 142 232Z" fill="#3B424D" opacity=".85"/>
+      <path d="M186 254q24 20 48 0" stroke="#F5F8FD" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <g id="ownerMug">
+        <path d="M318 436 L362 596 L306 560" stroke="#0E90D9" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="270" y="500" width="60" height="64" rx="10" fill="#fff"/><rect x="270" y="520" width="60" height="14" fill="#0B3E7A"/>
+        <path d="M330 512q22 4 22 22t-22 22" stroke="#fff" stroke-width="9" fill="none"/>
+        <circle cx="318" cy="572" r="32" fill="#EDBE98"/>
+        <path d="M286 478q-8-14 0-26M304 482q-8-14 0-26" stroke="#B7C4D6" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>
+      </g>
+      <path d="M118 436 L84 610 L48 698" stroke="#0E90D9" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="46" cy="706" r="32" fill="#EDBE98"/>
+      <rect x="-780" y="722" width="1700" height="26" rx="6" fill="#E9DAB9"/>
+      <rect x="-780" y="748" width="1700" height="300" fill="#B99B6B"/>
+      <rect x="-780" y="748" width="1700" height="8" fill="#A98B5C"/>
+      <rect x="22" y="700" width="46" height="26" rx="13" fill="#fff" stroke="#B7C4D6" stroke-width="3"/>
+    </svg>
+  </div>
+
+  <!-- CENA 8: fechamento -->
+  <div class="sc" id="s8">
+    <img id="logo8" src="logo-branco.svg" style="position:absolute;left:290px;top:420px;width:500px">
+    <div class="h w" id="t8" style="position:absolute;left:40px;top:880px;width:1000px;text-align:center;font-size:96px"><span class="word">Controle</span> <span class="word">da</span> <span class="word">sua</span><br><span class="word">oficina</span><br><b><span class="word">na</span> <span class="word">palma</span> <span class="word">da</span> <span class="word">sua</span> <span class="word">mão.</span></b></div>
+    <div id="url8" class="mono" style="position:absolute;left:0;top:1560px;width:1080px;text-align:center;font-size:50px;font-weight:600;letter-spacing:.06em;color:#5DB8EE;opacity:0">volmastercrm.com</div>
   </div>
 </div>
 
@@ -176,8 +320,17 @@ CARDS.forEach(([pl,cl,tx,cor,bg,tag],i)=>{
 });
 
 // ---------- linha do tempo ----------
-const T = {s1:[0,3.4], s2:[3.2,7.2], s3:[7.0,11.6], s4:[11.4,15.0], s5:[14.8,18.2], s6:[18.0,21]};
-const DUR = 21;
+const T = {s1:[0,3.4], s2:[3.2,7.2], s3:[7.0,11.6], s4:[11.4,15.0], s5:[14.8,18.2], s6:[18.0,22.8], s7:[22.6,27.2], s8:[27.0,31]};
+const DUR = 31;
+// Fotos reais (opcional): coloque os arquivos em promo/fotos/. Sem foto, usa a ilustração.
+const PHOTOS = {ph6:'fotos/mecanico-celular.jpg', ph7:'fotos/dono-computador.jpg'};
+const HAS = {};
+window.photosReady = Promise.all(Object.entries(PHOTOS).map(([id,src]) => new Promise(res => {
+  const im = new Image();
+  im.onload = () => { HAS[id]=true; $(id).querySelector('.pin').style.backgroundImage = `url(${src})`; res(); };
+  im.onerror = () => { HAS[id]=false; res(); };
+  im.src = src;
+})));
 
 function words(el, lt, start, step=.13){
   el.querySelectorAll('.word').forEach((w,i)=>{
@@ -204,7 +357,7 @@ function scene(id, t, fi=.45, fo=.45){
 
 function render(t){
   // fundos: escuro nas pontas, claro no meio
-  const light = clamp((t-2.9)/.5) * clamp((18.3-t)/.5);
+  const light = clamp((t-2.9)/.5) * clamp((26.9-t)/.5);
   $('bgLight').style.opacity = light;
 
   // CENA 1
@@ -272,11 +425,80 @@ function render(t){
   for(let i=0;i<pts.length-1;i++){ if(x>=pts[i][0]&&x<=pts[i+1][0]){ const u=(x-pts[i][0])/(pts[i+1][0]-pts[i][0]); y=pts[i][1]+(pts[i+1][1]-pts[i][1])*eio(u*.9+u*u*.1); break; } }
   d.setAttribute('cx',x); d.setAttribute('cy',y);
 
-  // CENA 6
-  lt = scene('s6',t,.5,.01);
-  { const p=eo(lt/.9); const l=$('logo6'); l.style.opacity=p; l.style.filter=`blur(${(1-p)*16}px)`; l.style.transform=`scale(${.9+.1*p})`; }
-  words($('t6'),lt,.7);
-  $('url6').style.opacity = eo((lt-1.9)/.6);
+  // CENA 6: celular
+  lt = scene('s6',t);
+  words($('t6'),lt,.1);
+  $('cap6').style.opacity = eo((lt-.8)/.6);
+  $('halo6').style.opacity = eo((lt-.4)/.8);
+  if (HAS.ph6) {
+    $('mech').style.display='none'; $('halo6').style.display='none';
+    const ph=$('ph6'); ph.style.display='block'; rise(ph,lt,.4,.9,80);
+    ph.querySelector('.pin').style.transform=`scale(${1.02+0.07*clamp(lt/4.8)})`;
+    $('phone6w').style.transform='translate(324px,571px) scale(.66)';
+  } else {
+    $('mech').style.display='block'; $('halo6').style.display='block';
+    $('ph6').style.display='none';
+    $('phone6w').style.transform='none';
+    rise($('mech'),lt,.5,.8,80);
+    $('mech').style.transform += ` translateY(${Math.sin(lt*2.2)*5}px)`;
+    $('mechArm').setAttribute('transform',`rotate(${Math.sin(lt*2.2)*1.6} 354 430)`);
+  }
+  rise($('phone6'),lt,.9,.8,90);
+  const TASKS=[['Troca de embreagem','QWE-4F55'],['Revisão de freios','RIO-9A88'],['Diagnóstico elétrico','ABC-1D23']];
+  const doneAt=[1.8,2.7,3.95];
+  const st = TASKS.map((_,i)=> lt>=doneAt[i] ? 'done' : (i===2 ? 'doing' : 'todo'));
+  TASKS.forEach(([n,pl],i)=>{
+    const el=$('tk'+i); el.style.top=(215+i*148)+'px';
+    rise(el,lt,1.2+i*.18,.55,40);
+    if(el.dataset.s!==st[i]){
+      el.dataset.s=st[i];
+      const ck = st[i]==='done'
+        ? '<span style="width:52px;height:52px;border-radius:50%;background:#1F9D6B;display:flex;align-items:center;justify-content:center;flex:none"><svg class="ic" viewBox="0 0 24 24" style="stroke:#fff;stroke-width:2.8;width:30px;height:30px"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'
+        : '<span style="width:52px;height:52px;border-radius:50%;border:4px solid '+(st[i]==='doing'?'#0E90D9':'#CBD6E4')+';flex:none"></span>';
+      const pill = st[i]==='done' ? '<span class="pill" style="font-size:20px;padding:7px 14px;background:#E5F6EE;color:#14633F">Concluído</span>'
+                 : st[i]==='doing' ? '<span class="pill" style="font-size:20px;padding:7px 14px;background:#E3F1FB;color:#0A6FB0">Em andamento</span>' : '';
+      el.innerHTML = ck+`<div style="flex:1;min-width:0"><div style="font-size:26px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${st[i]==='done'?'color:#5F7088;text-decoration:line-through':''}">${n}</div><div style="display:flex;align-items:center;gap:12px;margin-top:8px"><span class="mono" style="font-size:20px;color:#5F7088;font-weight:600">${pl}</span>${pill}</div></div>`;
+    }
+  });
+  const nDone = st.filter(x=>x==='done').length;
+  const pv = (eo((lt-1.8)/.5)*1 + eo((lt-2.7)/.5)*1 + eo((lt-3.95)/.5)*1)/3;
+  $('prog6').style.width = (pv*100)+'%';
+  $('prog6t').textContent = nDone+' de 3 concluídas';
+  const bp = (lt>3.55 && lt<3.8) ? .96 : 1;
+  const bt = lt>3.8 ? 'done' : 'go';
+  const btn=$('btn6'); btn.style.transform=`scale(${bp})`;
+  if(btn.dataset.s!==bt){ btn.dataset.s=bt; btn.textContent = bt==='done' ? 'Serviço concluído ✓' : 'Concluir serviço'; btn.style.background = bt==='done' ? 'linear-gradient(135deg,#1F9D6B,#178A5C)' : 'linear-gradient(135deg,#0E90D9,#0A6FB0)'; }
+
+  // CENA 7: computador
+  lt = scene('s7',t);
+  words($('t7'),lt,.1);
+  $('cap7').style.opacity = eo((lt-.8)/.6);
+  if (HAS.ph7) {
+    $('owner').style.display='none';
+    const ph=$('ph7'); ph.style.display='block'; rise(ph,lt,.4,.9,80);
+    ph.querySelector('.pin').style.transform=`scale(${1.02+0.07*clamp(lt/4.6)})`;
+    $('mon7w').style.transform='translate(81px,108px) scale(.95)';
+  } else {
+    $('owner').style.display='block'; $('ph7').style.display='none';
+    $('mon7w').style.transform='none';
+    rise($('owner'),lt,.6,.8,80);
+    $('owner').style.transform += ` translateY(${Math.sin(lt*2)*4}px)`;
+    $('ownerMug').setAttribute('transform',`rotate(${Math.sin(lt*1.6)*2.2} 318 560)`);
+  }
+  rise($('mon7'),lt,.35,.8,80);
+  rise($('chipA'),lt,1.9,.55,50);
+  rise($('chipB'),lt,2.6,.55,50);
+  const c7 = k => eo((lt-k)/1.1);
+  $('m1').textContent = 'R$ '+fmt(84320*c7(.9),0);
+  $('m2').textContent = 'R$ '+fmt(2140*c7(1.0),0);
+  $('m3').textContent = Math.round(72*c7(1.1))+'%';
+  $('cpr2').setAttribute('width', 560*eio((lt-1.1)/1.7));
+
+  // CENA 8: fechamento
+  lt = scene('s8',t,.5,.01);
+  { const p=eo(lt/.9); const l=$('logo8'); l.style.opacity=p; l.style.filter=`blur(${(1-p)*16}px)`; l.style.transform=`scale(${.9+.1*p})`; }
+  words($('t8'),lt,.7,.11);
+  $('url8').style.opacity = eo((lt-2.3)/.6);
 }
 window.render = render; window.DUR = DUR;
 render(0);

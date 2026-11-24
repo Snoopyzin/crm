@@ -1,0 +1,8 @@
+Coloque aqui as fotos reais (JPG), com estes nomes exatos:
+
+  mecanico-celular.jpg     mecanico olhando o celular (cena "No celular")
+  dono-computador.jpg      dono de oficina olhando o computador (cena "No computador")
+
+Formato: vertical (retrato) funciona melhor, pelo menos 1200 x 1400 px.
+Sem a foto, o video usa a ilustracao no lugar.
+Use apenas imagens que voce tenha licenca para publicar.
