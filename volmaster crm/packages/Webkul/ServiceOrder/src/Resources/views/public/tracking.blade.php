@@ -42,6 +42,12 @@
         .hero { padding:20px 20px 18px; overflow:hidden; }
         .cena { position:relative; margin:-20px -20px 16px; aspect-ratio:16/9; background:#0a1e3b; overflow:hidden; }
         .cena img { width:100%; height:100%; object-fit:cover; display:block; }
+        .cena.composta { background:linear-gradient(180deg,#27486f,#0f2848) center/cover no-repeat; }
+        .cena .chegada { object-position:50% 25%; }
+        .cena .vei { position:absolute; z-index:1; left:19%; bottom:6px; width:62%; filter:drop-shadow(0 10px 8px rgba(0,0,0,.5)); height:auto; }
+        .cena .vei.chegando { animation: chega 2.6s cubic-bezier(.2,.8,.2,1) both, balanco 320ms ease-in-out 2.6s infinite alternate; }
+        @keyframes chega { from { transform:translateX(-135%); } to { transform:translateX(0); } }
+        .cena .nomeof { position:absolute; z-index:2; top:12px; left:14px; right:14px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.7); }
         .cena::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,15,32,0) 55%, rgba(5,15,32,.78)); pointer-events:none; }
         .selo { position:absolute; left:14px; bottom:12px; z-index:2; display:inline-flex; align-items:center; gap:8px; background:rgba(8,20,40,.62); border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border-radius:999px; padding:6px 13px 6px 10px; font-size:12.5px; font-weight:600; color:#fff; }
         .selo i { width:9px; height:9px; border-radius:50%; background:#37d0ff; box-shadow:0 0 0 0 rgba(55,208,255,.7); animation:pulso 1.6s infinite; }
@@ -117,7 +123,7 @@
 <div class="wrap">
     <div class="top">
         <img src="{{ asset('img/volmaster-logo-branco.svg') }}" alt="Volmaster Tech">
-        <span>Acompanhe seu veículo</span>
+        <span>{{ $oficina['propria'] ? $oficina['nome'] : 'Acompanhe seu veículo' }}</span>
     </div>
 
     @if ($isCancelled)
@@ -130,11 +136,17 @@
         <div class="card hero">
             @php
                 $chegou = $concluida || $atual >= 6;
-                $pasta = 'img/caminhoes/';
+                // 1) cena 3D da própria oficina (gerada pela Volmaster)  2) foto da fachada + caminhão  3) cena padrão da Volmaster
+                $modoCena = $oficina['personalizada'] ? 'personalizada' : ($oficina['propria'] ? 'composta' : 'padrao');
+                $pasta = $modoCena === 'personalizada' ? $oficina['pasta'] : 'img/caminhoes/';
             @endphp
-            <div class="cena">
-                @if ($chegou)
-                    <img src="{{ asset($pasta.'chegou-'.$caminhao['slug'].'.jpg') }}" alt="Seu caminhão chegou na oficina">
+            <div class="cena {{ $modoCena === 'composta' ? 'composta' : '' }}" @if ($modoCena === 'composta' && $oficina['fachada']) style="background-image:url('{{ $oficina['fachada'] }}')" @endif>
+                @if ($modoCena === 'composta')
+                    <img class="vei {{ $chegou ? 'parado' : 'chegando' }}" src="{{ asset($caminhao['arquivo']) }}" alt="Seu caminhão">
+                    <span class="nomeof">{{ $oficina['nome'] }}</span>
+                    <span class="selo {{ $chegou ? 'ok' : '' }}"><i></i>{{ $chegou ? 'Pronto para você' : $etapaAtual['titulo'] }}</span>
+                @elseif ($chegou)
+                    <img class="chegada" src="{{ asset($pasta.'chegou-'.$caminhao['slug'].'.jpg') }}" alt="Seu caminhão chegou na oficina">
                     <span class="selo ok"><i></i>Pronto para você</span>
                 @else
                     {{-- Imagem animada (WebP): anima em qualquer navegador, sem depender de autoplay, codec ou "reduzir animações". --}}
@@ -262,7 +274,7 @@
         </script>
     @endif
 
-    <p class="rodape">Dúvidas? Fale com a oficina pelo WhatsApp.</p>
+    <p class="rodape">Dúvidas? Fale com {{ $oficina['propria'] ? $oficina['nome'] : 'a oficina' }} pelo WhatsApp.</p>
 </div>
 </body>
 </html>

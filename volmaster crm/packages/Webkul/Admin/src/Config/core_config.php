@@ -37,6 +37,24 @@ return [
             ],
         ],
     ], [
+        'key' => 'general.settings.oficina',
+        'name' => 'Identidade da oficina',
+        'info' => 'O nome e a foto da fachada da sua oficina aparecem no link de acompanhamento que o cliente recebe.',
+        'sort' => 2,
+        'fields' => [
+            [
+                'name' => 'nome',
+                'title' => 'Nome da oficina (aparece no letreiro e no link do cliente)',
+                'type' => 'text',
+                'default' => '',
+            ], [
+                'name' => 'fachada',
+                'title' => 'Foto da fachada da oficina (JPG, PNG ou WEBP, de preferência na horizontal)',
+                'type' => 'image',
+                'validation' => 'mimes:jpeg,jpg,png,webp|max:6144',
+            ],
+        ],
+    ], [
         'key' => 'general.support',
         'name' => 'admin::app.configuration.index.general.support.title',
         'info' => 'admin::app.configuration.index.general.support.info',
