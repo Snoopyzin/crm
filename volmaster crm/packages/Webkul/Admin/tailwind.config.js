@@ -37,9 +37,31 @@ module.exports = {
         extend: {
             colors: {
                 brandColor: "var(--brand-color)",
+
+                // Volmaster Tech: cinzas com um fundo azul-marinho, no lugar
+                // do cinza neutro do Tailwind. Muda todas as telas de uma vez.
+                gray: {
+                    50:  "#F5F8FC",
+                    100: "#EDF2F8",
+                    200: "#DFE7F1",
+                    300: "#CBD6E4",
+                    400: "#8EA0B8",
+                    500: "#5F7088",
+                    600: "#445670",
+                    700: "#2E4059",
+                    800: "#1A2C47",
+                    900: "#0F1F36",
+                    950: "#08121F",
+                },
+
+                navy: {
+                    DEFAULT: "#0B3E7A",
+                    deep: "#071A33",
+                },
             },
 
             fontFamily: {
+                display: ['"Chakra Petch"', 'Inter', 'sans-serif'],
                 inter: ['Inter'],
                 icon: ['icomoon']
             }

@@ -52,6 +52,11 @@
         rel="stylesheet"
     />
 
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    />
+
     @if ($favicon = core()->getConfigData('general.general.admin_logo.favicon_image'))
         <link
             type="image/x-icon"
