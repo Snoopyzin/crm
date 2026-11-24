@@ -332,12 +332,33 @@ const DUR = 31;
 // Fotos reais (opcional): coloque os arquivos em promo/fotos/. Sem foto, usa a ilustração.
 const PHOTOS = {ph6:'fotos/mecanico-celular.jpg', ph7:'fotos/dono-computador.jpg'};
 const HAS = {};
-window.photosReady = Promise.all(Object.entries(PHOTOS).map(([id,src]) => new Promise(res => {
-  const im = new Image();
-  im.onload = () => { HAS[id]=true; $(id).querySelector('.pin').style.backgroundImage = `url(${src})`; res(); };
-  im.onerror = () => { HAS[id]=false; res(); };
-  im.src = src;
-})));
+const SEQ = {};   // clipes de vídeo (sequência de quadros) por cena: fotos/seq-6, fotos/seq-7
+const loadImg = src => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+async function loadSeq(id, dir) {
+  const imgs = [];
+  for (let i = 1; i < 400; i++) { const im = await loadImg(`${dir}/${String(i).padStart(4,'0')}.jpg`); if (!im) break; imgs.push(im); }
+  if (imgs.length > 1) { SEQ[id] = imgs; HAS[id] = true; }
+}
+window.photosReady = (async () => {
+  await Promise.all(Object.entries(PHOTOS).map(async ([id, src]) => {
+    const im = await loadImg(src);
+    if (im) { HAS[id] = true; $(id).querySelector('.pin').style.backgroundImage = `url(${src})`; } else { HAS[id] = false; }
+  }));
+  await loadSeq('ph6', 'fotos/seq-6');
+  await loadSeq('ph7', 'fotos/seq-7');
+})();
+// quadro do clipe para o instante lt da cena (segura o último quadro no fim)
+function seqFrame(id, el, lt, kb) {
+  const pin = el.querySelector('.pin');
+  const imgs = SEQ[id];
+  if (imgs) {
+    const k = Math.min(imgs.length - 1, Math.max(0, Math.floor((lt - .4) * 30)));
+    pin.style.backgroundImage = `url(${imgs[k].src})`;
+    pin.style.transform = 'scale(1.01)';
+  } else {
+    pin.style.transform = `scale(${1.02 + 0.07 * clamp(lt / kb)})`;
+  }
+}
 
 function words(el, lt, start, step=.13){
   el.querySelectorAll('.word').forEach((w,i)=>{
@@ -440,7 +461,7 @@ function render(t){
   if (HAS.ph6) {
     $('mech').style.display='none'; $('halo6').style.display='none';
     const ph=$('ph6'); ph.style.display='block'; rise(ph,lt,.4,.9,80);
-    ph.querySelector('.pin').style.transform=`scale(${1.02+0.07*clamp(lt/4.8)})`;
+    seqFrame('ph6',ph,lt,4.8);
     $('phone6w').style.transform='translate(-296px,631px) scale(.66)';
     $('b6').style.display='block';
     [0,1,2].forEach(i=>rise($('b6').children[i],lt,1.4+i*.3,.55,40));
@@ -485,7 +506,7 @@ function render(t){
   if (HAS.ph7) {
     $('owner').style.display='none';
     const ph=$('ph7'); ph.style.display='block'; rise(ph,lt,.4,.9,80);
-    ph.querySelector('.pin').style.transform=`scale(${1.02+0.07*clamp(lt/4.6)})`;
+    seqFrame('ph7',ph,lt,4.6);
     $('mon7w').style.transform='translate(44px,332px) scale(.8)';
     const ca=$('chipA'), cb=$('chipB');
     ca.style.left='600px'; ca.style.top='1330px'; ca.style.width='420px'; cb.style.left='600px'; cb.style.top='1460px'; cb.style.width='420px';

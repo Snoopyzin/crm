@@ -34,3 +34,4 @@ local.properties
 # ---- Notas de trabalho com URL de produção, chaves e senhas ----
 /RETOMAR-TRABALHO.md
 promo/fotos/*.jpg
+promo/fotos/seq-*/
