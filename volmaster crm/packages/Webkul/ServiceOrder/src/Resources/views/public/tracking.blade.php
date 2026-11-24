@@ -1,303 +1,247 @@
+@php
+    /*
+     * Link de acompanhamento do cliente (público, assinado). Mostra o caminho do
+     * caminhão pelas 9 etapas, as anotações e anexos que a oficina liberou e o
+     * histórico. Nada de valores, crédito ou anotações internas.
+     */
+    $passos = $jornada['passos'];
+    $atual = $jornada['atual'];
+    $concluida = $jornada['concluida'];
+    $total = count($passos);
+    $andando = ! $isCancelled && ! $concluida && $atual < 6;
+    $veiculo = $serviceOrder->vehicle;
+    $marcaModelo = trim(($veiculo->marca ?? '').' '.($veiculo->modelo ?? ''));
+    $etapaAtual = $passos[$atual];
+    $dataBr = fn ($d) => $d ? $d->format('d/m \à\s H:i') : null;
+@endphp
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <title>Acompanhe seu veículo — Volmaster Tech</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    @unless ($isCancelled || $currentStep >= count($steps) - 1)
+    <meta name="theme-color" content="#071A33">
+    @unless ($isCancelled || $concluida)
         <meta http-equiv="refresh" content="45">
     @endunless
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap">
     <style>
+        :root { --ink:#F2F6FB; --mut:#8FA6C4; --blue:#0E90D9; --cy:#37d0ff; --ok:#1F9D6B; --card:#10223F; --line:rgba(255,255,255,.08); --row:92px; }
         * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            background: #f3f4f6;
-            color: #1f2937;
-            font-family: Roboto, -apple-system, "Segoe UI", sans-serif;
-            padding: 32px 16px 60px;
-        }
-        .card {0
-            background: #fff;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 420px;
-            margin: 0 auto;
-            box-shadow: 0 4px 24px rgba(0,0,0,.06);
-            padding: 22px 20px 26px;
-            overflow: hidden;
-        }
+        html { background:#050F20; }
+        body { margin:0; color:var(--ink); font-family:Inter,-apple-system,"Segoe UI",sans-serif; min-height:100vh;
+            background: radial-gradient(900px 500px at 100% -10%, rgba(14,144,217,.28), transparent 60%), radial-gradient(700px 500px at -20% 40%, rgba(91,75,214,.16), transparent 60%), linear-gradient(180deg,#0B2447 0%,#071A33 45%,#050F20 100%); background-repeat:no-repeat; padding: 20px 16px 56px; }
+        .wrap { width:100%; max-width:440px; margin:0 auto; }
+        .top { display:flex; align-items:center; justify-content:space-between; padding:2px 4px 18px; }
+        .top img { height:38px; display:block; }
+        .top span { font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--mut); font-weight:600; }
+        h1,h2,h3 { font-family:'Chakra Petch',Inter,sans-serif; margin:0; letter-spacing:.01em; }
+        .card { background:var(--card); border:1px solid var(--line); border-radius:24px; box-shadow:0 30px 60px -34px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.05); }
 
-        .brand { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
-        .brand-dot { width: 9px; height: 9px; border-radius: 999px; background: #0E90D9; }
-        .brand-name { font-weight: 700; font-size: 12.5px; color: #5c6b7a; letter-spacing: .03em; }
+        .hero { padding:20px 20px 18px; }
+        .kicker { font-size:12px; font-weight:700; letter-spacing:.1em; color:#5DB8EE; text-transform:uppercase; }
+        .hero h1 { font-size:30px; line-height:1.1; margin:6px 0 6px; }
+        .hero p { margin:0; color:#C5D3E6; font-size:15px; line-height:1.45; }
+        .veic { display:flex; align-items:center; gap:12px; margin-top:16px; padding-top:16px; border-top:1px solid var(--line); flex-wrap:wrap; }
+        .plate { display:inline-flex; flex-direction:column; align-items:center; background:#fff; border:3px solid #0b0f14; border-radius:7px; overflow:hidden; font-family:'Chakra Petch',sans-serif; font-weight:700; line-height:1; flex:none; }
+        .plate i { display:block; width:100%; background:#1B4FD6; color:#fff; font-style:normal; font-size:7px; letter-spacing:.2em; text-align:center; padding:2px 0 1px; }
+        .plate b { font-size:19px; padding:3px 10px 2px; color:#0b0f14; letter-spacing:.04em; }
+        .veic .m { font-size:14px; color:#C5D3E6; font-weight:500; }
+        .veic .m small { display:flex; align-items:center; gap:6px; color:var(--mut); font-size:12.5px; margin-top:3px; }
+        .sw { width:12px; height:12px; border-radius:50%; display:inline-block; box-shadow:0 0 0 2px rgba(255,255,255,.18); }
+        .meta { display:flex; gap:10px; margin-top:14px; }
+        .meta div { flex:1; background:rgba(255,255,255,.05); border:1px solid var(--line); border-radius:14px; padding:10px 12px; }
+        .meta small { display:block; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--mut); font-weight:700; }
+        .meta b { display:block; margin-top:2px; font-size:14px; }
 
-        .hero { background: #fff; border-radius: 20px; padding: 20px 18px 18px; box-shadow: 0 10px 28px rgba(16,40,60,.08); }
-        .stage-kicker { font-size: 11.5px; font-weight: 700; color: #0E90D9; letter-spacing: .04em; text-transform: uppercase; }
-        .stage-headline { font-size: 22px; font-weight: 800; margin: 3px 0 2px; letter-spacing: -.01em; }
-        .stage-sub { font-size: 13px; color: #6b7280; margin: 0; }
+        section { margin-top:22px; }
+        section > h2 { font-size:19px; margin:0 4px 12px; }
+        section > h2 small { font-family:Inter,sans-serif; font-size:12px; color:var(--mut); font-weight:500; margin-left:8px; letter-spacing:0; }
 
-        .progress-track { position: relative; height: 4px; background: #eaeff3; border-radius: 999px; margin: 18px 0 10px; }
-        .progress-fill { position: absolute; top: 0; left: 0; height: 100%; background: #0E90D9; border-radius: 999px; transition: width 600ms ease; }
+        /* ---- o caminho do caminhão ---- */
+        .caminho { padding:18px 16px 14px; overflow:hidden; }
+        .trilha { position:relative; padding-left:0; height:calc(var(--row) * var(--n)); }
+        .estrada { position:absolute; left:52px; top:calc(var(--row) / 2); bottom:calc(var(--row) / 2); width:14px; border-radius:8px; background:#1a2f50; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+        .estrada::before { content:""; position:absolute; left:50%; top:0; bottom:0; width:2px; transform:translateX(-50%); background:repeating-linear-gradient(to bottom, rgba(255,255,255,.28) 0 8px, transparent 8px 18px); }
+        .feita { position:absolute; left:52px; top:calc(var(--row) / 2); width:14px; border-radius:8px; background:linear-gradient(180deg,#0A6FB0,#37d0ff); box-shadow:0 0 18px rgba(55,208,255,.55); height:0; transition: height 1800ms cubic-bezier(.65,0,.35,1); }
+        .feita::before { content:""; position:absolute; left:50%; top:0; bottom:0; width:2px; transform:translateX(-50%); background:repeating-linear-gradient(to bottom, rgba(255,255,255,.85) 0 8px, transparent 8px 18px); background-size:100% 18px; }
+        .andando .feita::before { animation: fluxo 520ms linear infinite; }
+        @keyframes fluxo { to { background-position: 0 18px; } }
+        .parada { position:absolute; left:0; right:0; height:var(--row); display:flex; align-items:center; }
+        .ponto { position:absolute; left:46px; width:26px; height:26px; border-radius:50%; background:#0B1B33; border:3px solid #35506f; display:flex; align-items:center; justify-content:center; font-size:13px; color:#fff; z-index:2; }
+        .parada.feito .ponto { background:var(--ok); border-color:var(--ok); }
+        .parada.atual .ponto { background:var(--blue); border-color:#fff; box-shadow:0 0 0 6px rgba(14,144,217,.28); }
+        .info { margin-left:120px; padding-right:4px; }
+        .info b { display:block; font-family:'Chakra Petch',sans-serif; font-size:17px; font-weight:600; color:#5d7596; }
+        .info small { display:block; margin-top:2px; font-size:12.5px; color:#5d7596; line-height:1.35; }
+        .parada.feito .info b { color:#fff; } .parada.feito .info small { color:var(--mut); }
+        .parada.atual .info b { color:#fff; font-size:19px; } .parada.atual .info small { color:#C5D3E6; font-size:13px; }
+        .info em { font-style:normal; display:inline-block; margin-top:5px; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; background:rgba(14,144,217,.2); color:#7fd0ff; border-radius:999px; padding:3px 9px; font-weight:700; }
+        /* o caminhão (3D) fica sobre a estrada, na etapa atual */
+        .caminhao { position:absolute; left:6px; width:106px; z-index:3; top:0; filter:drop-shadow(0 10px 10px rgba(0,0,0,.45)); transition: transform 1800ms cubic-bezier(.65,0,.35,1); will-change:transform; pointer-events:none; }
+        .caminhao img { width:100%; display:block; }
+        .andando .caminhao img { animation: balanco 300ms ease-in-out infinite alternate; }
+        @keyframes balanco { from { transform:translateY(0); } to { transform:translateY(-1.5px); } }
 
-        .dots { display: flex; justify-content: center; gap: 6px; margin: 4px 0 0; }
-        .dot { width: 6px; height: 6px; border-radius: 999px; background: #dbe3ea; }
-        .dot.done { background: #0E90D9; }
-        .dot.current { background: #0E90D9; width: 16px; }
+        /* ---- anotações e anexos / histórico ---- */
+        .vazio { color:var(--mut); font-size:14px; padding:18px; text-align:center; line-height:1.5; }
+        .anexo { padding:16px 16px 14px; margin-bottom:12px; }
+        .anexo h3 { font-size:16px; } .anexo .q { font-size:12px; color:var(--mut); margin-top:2px; }
+        .anexo p { margin:8px 0 0; font-size:14px; line-height:1.5; color:#D7E2F1; white-space:pre-line; }
+        .fotos { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:12px; }
+        .fotos a { display:block; aspect-ratio:1; border-radius:12px; overflow:hidden; background:#0b1b33; border:1px solid var(--line); }
+        .fotos img { width:100%; height:100%; object-fit:cover; display:block; }
+        .arq { display:flex; align-items:center; gap:10px; margin-top:8px; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.05); border:1px solid var(--line); color:#fff; text-decoration:none; font-size:13.5px; font-weight:500; }
+        .arq u { text-decoration:none; font-size:18px; }
+        .hist { padding:8px 18px; }
+        .hist li { list-style:none; position:relative; padding:12px 0 12px 22px; border-bottom:1px solid var(--line); }
+        .hist li:last-child { border-bottom:0; }
+        .hist li::before { content:""; position:absolute; left:0; top:19px; width:9px; height:9px; border-radius:50%; background:var(--blue); box-shadow:0 0 0 4px rgba(14,144,217,.2); }
+        .hist b { display:block; font-size:14.5px; font-weight:600; } .hist small { color:var(--mut); font-size:12px; }
+        .hist ul, ul.hist { margin:0; padding:8px 18px; }
 
-        .vehicle-row { display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 14px; padding: 12px 14px; margin-top: 14px; box-shadow: 0 6px 18px rgba(16,40,60,.06); }
-        .vehicle-plate { font-family: "Courier New", monospace; font-weight: 700; font-size: 13px; background: #111827; color: #fff; padding: 4px 9px; border-radius: 6px; letter-spacing: .05em; }
-        .vehicle-model { font-size: 12px; color: #4b5563; }
+        .cancelada { text-align:center; padding:50px 20px; } .cancelada h2 { margin:10px 0 6px; font-size:20px; } .cancelada p { color:#C5D3E6; font-size:14px; margin:0; }
+        .rodape { text-align:center; margin-top:26px; font-size:12.5px; color:var(--mut); }
 
-        .meta-row { display: flex; gap: 10px; margin-top: 10px; }
-        .meta-card { flex: 1; background: #fff; border-radius: 14px; padding: 12px 14px; box-shadow: 0 6px 18px rgba(16,40,60,.06); }
-        .meta-card .k { font-size: 10.5px; color: #8a97a6; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; }
-        .meta-card .v { font-size: 13.5px; font-weight: 700; margin-top: 2px; }
-
-        .cancelled { text-align: center; padding: 60px 10px; }
-        .cancelled-icon { font-size: 38px; }
-        .cancelled h2 { margin: 10px 0 4px; font-size: 18px; }
-        .cancelled p { font-size: 13px; color: #6b7280; margin: 0; }
-
-        .footer-hint { text-align: center; margin-top: 20px; font-size: 12px; color: #9ca3af; }
-
-        .road-stage {
-            position: relative; margin: 14px -18px 0; height: 150px;
-            background: #d3e8f6; overflow: hidden;
-        }
-        .road-stage svg { display: block; width: 100%; height: 100%; }
-
-        /* --- Flat truck scene ---
-           Positioning (#truck-g, JS-controlled) and the "bob" wobble (CSS
-           animation) live on different elements on purpose: a running CSS
-           animation on `transform` replaces the whole property -- including
-           an inline-JS-set translate -- on whichever element it's attached
-           to, so the two can never share one element. While the service is
-           still going ("rolling"), wheels, road and clouds keep moving like a
-           looping animation; at the last stage the truck parks at the flag. */
-        #truck-g { transition: transform 1800ms cubic-bezier(.65,0,.35,1); }
-        .scene.rolling .bob-wrap { animation: bob 260ms ease-in-out infinite alternate; }
-        @keyframes bob { from { transform: translateY(0); } to { transform: translateY(-1.2px); } }
-
-        .wheel-spin { transform-origin: center; transform-box: fill-box; }
-        .scene.rolling .wheel-spin { animation: spin 420ms linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        #road-dashes { stroke-dasharray: 14 10; }
-        .scene.rolling #road-dashes { animation: dashes 420ms linear infinite; }
-        @keyframes dashes { to { stroke-dashoffset: 24; } }
-
-        .cloud { animation: drift linear infinite; }
-        .cloud.c1 { animation-duration: 38s; }
-        .cloud.c2 { animation-duration: 52s; animation-delay: -20s; }
-        .cloud.c3 { animation-duration: 45s; animation-delay: -34s; }
-        @keyframes drift { from { transform: translateX(440px); } to { transform: translateX(-120px); } }
-
-        #headlight-glow { opacity: 0; transition: opacity 400ms ease; }
-        #truck-g.lit #headlight-glow { opacity: 1; }
-
-        #exhaust circle { transform-box: fill-box; transform-origin: center; animation: puff 900ms ease-out infinite; }
-        #exhaust circle:nth-child(2) { animation-delay: 300ms; }
-        #exhaust circle:nth-child(3) { animation-delay: 600ms; }
-        .scene:not(.rolling) #exhaust { opacity: 0; }
-        @keyframes puff {
-            0%   { opacity: .5; transform: translate(0,0) scale(.4); }
-            100% { opacity: 0;  transform: translate(-12px,-9px) scale(1.4); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            #truck-g { transition: none; }
-            .scene.rolling .bob-wrap, .scene.rolling .wheel-spin, .scene.rolling #road-dashes, .cloud, #exhaust circle { animation: none; }
-        }
+        @media (prefers-reduced-motion: reduce) { .caminhao, .feita { transition:none; } .andando .caminhao img, .andando .feita::before { animation:none; } }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="brand">
-            <span class="brand-dot"></span>
-            <span class="brand-name">VOLMASTER TECH</span>
+<div class="wrap">
+    <div class="top">
+        <img src="{{ asset('img/volmaster-logo-branco.svg') }}" alt="Volmaster Tech">
+        <span>Acompanhe seu veículo</span>
+    </div>
+
+    @if ($isCancelled)
+        <div class="card cancelada">
+            <div style="font-size:38px">⏸️</div>
+            <h2>Ordem de serviço cancelada</h2>
+            <p>Fale com a oficina se isso não fizer sentido pra você.</p>
         </div>
+    @else
+        <div class="card hero">
+            <div class="kicker">OS #{{ $serviceOrder->id }}</div>
+            <h1>{{ $concluida ? 'Tudo certo!' : $etapaAtual['titulo'] }}</h1>
+            <p>{{ $concluida ? 'Sua ordem de serviço foi concluída. Obrigado pela confiança!' : $etapaAtual['texto'] }}</p>
 
-        @if ($isCancelled)
-            <div class="cancelled">
-                <div class="cancelled-icon">⏸️</div>
-                <h2>Ordem de serviço cancelada</h2>
-                <p>Fale com a oficina se isso não fizer sentido pra você.</p>
-            </div>
-        @else
-            @php
-                $subs = [
-                    'Seu veículo chegou na oficina.',
-                    'Nosso mecânico está avaliando o problema.',
-                    'Aguardando sua aprovação pra seguir.',
-                    'Serviço em andamento agora.',
-                    'Fazendo o teste de rodagem final.',
-                    'Pode vir buscar quando quiser!',
-                ];
-                $lit = [false, false, false, true, true, true];
-                $startIndex = max(0, $currentStep - 1);
-
-                // Caminhão do cliente: cor, marca e tipo vêm do cadastro do veículo.
-                $veiculo = $serviceOrder->vehicle;
-                $silhueta = \Webkul\ServiceOrder\Services\TruckSvg::silhueta($veiculo->marca ?? null, $veiculo->modelo ?? null, $veiculo->tipo ?? null);
-                $caminhaoSvg = \Webkul\ServiceOrder\Services\TruckSvg::render($veiculo->cor ?? null, $veiculo->marca ?? null, $silhueta);
-            @endphp
-
-            <div class="hero">
-                <div class="stage-kicker">OS #{{ $serviceOrder->id }}</div>
-                <div class="stage-headline">{{ $steps[$currentStep] }}</div>
-                <p class="stage-sub">{{ $subs[$currentStep] ?? '' }}</p>
-
-                <div class="road-stage">
-                    <svg class="scene" id="scene" viewBox="0 0 400 150" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Caminhão indo da oficina até a entrega">
-                        {{-- Sky + drifting clouds --}}
-                        <rect x="0" y="0" width="400" height="150" fill="#d3e8f6"></rect>
-
-                        <g fill="#f3f8fd">
-                            <g class="cloud c1"><g transform="translate(0,22)">
-                                <ellipse cx="22" cy="8" rx="22" ry="7"></ellipse><ellipse cx="14" cy="4" rx="10" ry="7"></ellipse><ellipse cx="28" cy="2" rx="11" ry="8"></ellipse>
-                            </g></g>
-                            <g class="cloud c2"><g transform="translate(0,44)">
-                                <ellipse cx="26" cy="8" rx="26" ry="7.5"></ellipse><ellipse cx="17" cy="3" rx="12" ry="8"></ellipse><ellipse cx="34" cy="2" rx="12" ry="9"></ellipse>
-                            </g></g>
-                            <g class="cloud c3"><g transform="translate(0,14)">
-                                <ellipse cx="18" cy="7" rx="18" ry="6"></ellipse><ellipse cx="11" cy="3" rx="8" ry="6"></ellipse><ellipse cx="23" cy="2" rx="9" ry="7"></ellipse>
-                            </g></g>
-                        </g>
-
-                        {{-- Grass, trees, road --}}
-                        <rect x="0" y="104" width="400" height="9" fill="#64a85a"></rect>
-                        <g transform="translate(66,104)">
-                            <rect x="-1" y="-5" width="2" height="5" fill="#7a5a3a"></rect>
-                            <path d="M0,-26 L7,-13 L4,-13 L9,-5 L-9,-5 L-4,-13 L-7,-13 Z" fill="#2f8a3b"></path>
-                        </g>
-                        <g transform="translate(78,104)">
-                            <rect x="-.8" y="-4" width="1.6" height="4" fill="#7a5a3a"></rect>
-                            <path d="M0,-18 L5,-9 L3,-9 L6.5,-4 L-6.5,-4 L-3,-9 L-5,-9 Z" fill="#3d9b48"></path>
-                        </g>
-                        <ellipse cx="352" cy="104" rx="8" ry="4.6" fill="#7cb342"></ellipse>
-                        <ellipse cx="361" cy="104" rx="6" ry="3.6" fill="#8bc34a"></ellipse>
-
-                        <rect x="0" y="112" width="400" height="38" fill="#5a5c60"></rect>
-                        <line id="road-dashes" x1="-30" y1="131" x2="430" y2="131" stroke="#ffffff" stroke-width="2"></line>
-
-                        {{-- Oficina (start) --}}
-                        <g>
-                            <rect x="6" y="78" width="44" height="30" fill="#eef1f4"></rect>
-                            <path d="M2,79 L28,64 L54,79 Z" fill="#1f7fe0"></path>
-                            <rect x="15" y="80.5" width="26" height="5.4" rx="1" fill="#0E90D9"></rect>
-                            <text x="28" y="84.6" font-size="4.2" font-weight="800" fill="#ffffff" text-anchor="middle" font-family="Roboto, sans-serif">OFICINA</text>
-                            <rect x="13" y="88" width="30" height="20" fill="#9aa6b2"></rect>
-                            <g stroke="#8592a0" stroke-width=".8">
-                                <line x1="13" y1="92" x2="43" y2="92"></line>
-                                <line x1="13" y1="96" x2="43" y2="96"></line>
-                                <line x1="13" y1="100" x2="43" y2="100"></line>
-                                <line x1="13" y1="104" x2="43" y2="104"></line>
-                            </g>
-                        </g>
-
-                        {{-- Finish flag --}}
-                        <g transform="translate(382,0)">
-                            <line x1="0" y1="72" x2="0" y2="108" stroke="#4b5563" stroke-width="1.6"></line>
-                            <rect x=".8" y="72" width="13" height="9" fill="#ffffff"></rect>
-                            <g fill="#1f2937">
-                                <rect x=".8" y="72" width="3.25" height="3"></rect><rect x="7.3" y="72" width="3.25" height="3"></rect>
-                                <rect x="4.05" y="75" width="3.25" height="3"></rect><rect x="10.55" y="75" width="3.25" height="3"></rect>
-                                <rect x=".8" y="78" width="3.25" height="3"></rect><rect x="7.3" y="78" width="3.25" height="3"></rect>
-                            </g>
-                        </g>
-
-                        {{-- Caminhão do cliente (vista lateral, vira para a direita). Unidades locais: 0..148 de largura, chão em y=60. --}}
-                        <g id="truck-g" transform="translate(8,41)">
-                            <g class="bob-wrap">
-                                <g transform="scale(1.45)">
-                                    {!! $caminhaoSvg !!}
-                                </g>
-                            </g>
-                        </g>
-                    </svg>
+            <div class="veic">
+                <span class="plate"><i>BRASIL</i><b>{{ $veiculo->placa ?? '—' }}</b></span>
+                <div class="m">
+                    {{ $marcaModelo !== '' ? $marcaModelo : 'Veículo' }}
+                    @if (! empty($veiculo->cor))
+                        <small><span class="sw" style="background: {{ $caminhao['hex'] }}"></span>{{ ucfirst(mb_strtolower($veiculo->cor)) }}</small>
+                    @endif
                 </div>
-
-                <div class="dots">
-                    @foreach ($steps as $index => $label)
-                        <span class="dot {{ $index < $currentStep ? 'done' : '' }} {{ $index === $currentStep ? 'current' : '' }}"></span>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="vehicle-row">
-                <span class="vehicle-plate">{{ $serviceOrder->vehicle->placa ?? '-' }}</span>
-                <span class="vehicle-model">{{ $serviceOrder->vehicle->marca ?? '' }} {{ $serviceOrder->vehicle->modelo ?? '' }}</span>
             </div>
 
             @if ($serviceOrder->tempo_servico || $serviceOrder->data_previsao)
-                <div class="meta-row">
+                <div class="meta">
                     @if ($serviceOrder->tempo_servico)
-                        <div class="meta-card"><div class="k">Tempo estimado</div><div class="v">{{ $serviceOrder->tempo_servico }}</div></div>
+                        <div><small>Tempo estimado</small><b>{{ $serviceOrder->tempo_servico }}</b></div>
                     @endif
                     @if ($serviceOrder->data_previsao)
-                        <div class="meta-card"><div class="k">Previsão</div><div class="v">{{ $serviceOrder->previsaoTexto() }}</div></div>
+                        <div><small>Previsão</small><b>{{ $serviceOrder->previsaoTexto() }}</b></div>
                     @endif
                 </div>
             @endif
+        </div>
 
-            <script>
-                (function () {
-                    // Truck's left edge travels from the oficina to the flag;
-                    // it drives from the previous stage to the current one on
-                    // load, and keeps "rolling" (wheels, road, smoke) until the
-                    // last stage, where it parks.
-                    var TRACK_START = 8;
-                    var TRACK_END = 168;
-                    var TRUCK_Y = 41;
-                    var DRIVE_MS = 1800;
+        <section>
+            <h2>O caminho do seu caminhão</h2>
+            <div class="card caminho {{ $andando ? 'andando' : '' }}">
+                <div class="trilha" id="trilha" style="--n: {{ $total }}">
+                    <div class="estrada"></div>
+                    <div class="feita" id="feita"></div>
 
-                    var lit = @json($lit);
-                    var startIndex = {{ $startIndex }};
-                    var currentIndex = {{ $currentStep }};
-                    var total = {{ count($steps) }};
-                    var isLast = currentIndex >= total - 1;
+                    @foreach ($passos as $i => $passo)
+                        <div class="parada {{ $passo['estado'] }}" style="top: calc(var(--row) * {{ $i }})">
+                            <span class="ponto">{{ $passo['estado'] === 'feito' ? '✓' : '' }}</span>
+                            <div class="info">
+                                <b>{{ $passo['titulo'] }}</b>
+                                @if ($passo['estado'] === 'atual')
+                                    <small>{{ $passo['texto'] }}</small>
+                                    <em>Agora</em>
+                                @elseif ($passo['estado'] === 'feito' && $passo['quando'])
+                                    <small>{{ $dataBr($passo['quando']) }}</small>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
 
-                    var scene = document.getElementById('scene');
-                    var truckG = document.getElementById('truck-g');
+                    <div class="caminhao" id="caminhao" aria-hidden="true">
+                        <img src="{{ asset($caminhao['arquivo']) }}" alt="">
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                    function xFor(index) {
-                        return TRACK_START + (total > 1 ? index / (total - 1) : 1) * (TRACK_END - TRACK_START);
-                    }
+        <section>
+            <h2>Anotações e anexos</h2>
+            @forelse ($anexos as $anexo)
+                <div class="card anexo">
+                    @if ($anexo['titulo'])<h3>{{ $anexo['titulo'] }}</h3>@endif
+                    @if ($anexo['quando'])<div class="q">{{ $dataBr($anexo['quando']) }}</div>@endif
+                    @if ($anexo['texto'])<p>{{ $anexo['texto'] }}</p>@endif
 
-                    function place(index) {
-                        truckG.classList.toggle('lit', !!lit[index]);
-                        truckG.style.transform = 'translate(' + xFor(index) + 'px, ' + TRUCK_Y + 'px)';
-                    }
+                    @php($fotos = collect($anexo['arquivos'])->where('tipo', 'foto'))
+                    @if ($fotos->isNotEmpty())
+                        <div class="fotos">
+                            @foreach ($fotos as $foto)
+                                <a href="{{ $foto['url'] }}" target="_blank" rel="noopener"><img src="{{ $foto['url'] }}" alt="{{ $foto['nome'] }}" loading="lazy"></a>
+                            @endforeach
+                        </div>
+                    @endif
 
-                    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    @foreach (collect($anexo['arquivos'])->where('tipo', '!=', 'foto') as $arq)
+                        <a class="arq" href="{{ $arq['url'] }}" target="_blank" rel="noopener"><u>{{ $arq['tipo'] === 'video' ? '▶' : '📎' }}</u>{{ $arq['nome'] }}</a>
+                    @endforeach
+                </div>
+            @empty
+                <div class="card vazio">Quando a oficina compartilhar fotos, vídeos e anotações sobre o seu veículo, elas aparecem aqui.</div>
+            @endforelse
+        </section>
 
-                    truckG.style.transition = 'none';
-                    place(reduceMotion ? currentIndex : startIndex);
+        <section>
+            <h2>Histórico</h2>
+            @if (count($historico))
+                <div class="card">
+                    <ul class="hist">
+                        @foreach ($historico as $linha)
+                            <li><b>{{ $linha['titulo'] }}</b>@if ($linha['quando'])<small>{{ $dataBr($linha['quando']) }}</small>@endif</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @else
+                <div class="card vazio">O histórico do seu veículo vai aparecendo aqui, passo a passo.</div>
+            @endif
+        </section>
 
-                    if (!isLast || startIndex !== currentIndex) {
-                        scene.classList.add('rolling');
-                    }
+        <script>
+            (function () {
+                // O caminhão sai da etapa anterior e anda até a atual; a estrada se acende por onde ele passou.
+                var ROW = 92, atual = {{ $atual }}, concluida = {{ $concluida ? 'true' : 'false' }};
+                var alvo = concluida ? {{ $total - 1 }} : atual;
+                var caminhao = document.getElementById('caminhao'), feita = document.getElementById('feita');
+                var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                function y(i) { return i * ROW + (ROW - caminhao.offsetHeight) / 2; }
+                function pos(i) { caminhao.style.transform = 'translateY(' + y(i) + 'px)'; feita.style.height = (i * ROW) + 'px'; }
+                caminhao.style.transition = 'none'; feita.style.transition = 'none';
+                pos(reduzir ? alvo : Math.max(0, alvo - 1));
+                var img = caminhao.querySelector('img');
+                function andar() { requestAnimationFrame(function () { requestAnimationFrame(function () {
+                    caminhao.style.transition = ''; feita.style.transition = ''; pos(alvo);
+                    @unless ($andando)
+                        setTimeout(function () { document.querySelector('.caminho').classList.remove('andando'); }, reduzir ? 0 : 1800);
+                    @endunless
+                }); }); }
+                if (img.complete) { pos(reduzir ? alvo : Math.max(0, alvo - 1)); andar(); } else { img.onload = function () { pos(reduzir ? alvo : Math.max(0, alvo - 1)); andar(); }; }
+            })();
+        </script>
+    @endif
 
-                    requestAnimationFrame(function () {
-                        requestAnimationFrame(function () {
-                            truckG.style.transition = '';
-
-                            if (!reduceMotion && startIndex !== currentIndex) {
-                                place(currentIndex);
-                            }
-
-                            if (isLast) {
-                                setTimeout(function () { scene.classList.remove('rolling'); }, reduceMotion ? 0 : DRIVE_MS);
-                            }
-                        });
-                    });
-                })();
-            </script>
-        @endif
-    </div>
-
-    <p class="footer-hint">Dúvidas? Fale com a oficina pelo WhatsApp.</p>
+    <p class="rodape">Dúvidas? Fale com a oficina pelo WhatsApp.</p>
+</div>
 </body>
 </html>

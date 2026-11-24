@@ -1,0 +1,51 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Caminhão 3D com fundo transparente</title>
+<style>html,body{margin:0;background:transparent;overflow:hidden}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { buildTruck } from './truck3d.js';
+// ?cor=%23D1262C &w=1400 &h=800
+const q = new URLSearchParams(location.search);
+const COR = q.get('cor') || '#D1262C';
+const W = +q.get('w') || 1400, H = +q.get('h') || 800;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setSize(W, H); renderer.setPixelRatio(1); renderer.setClearColor(0x000000, 0);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+
+// reflexos: céu de estúdio (só no mapa de reflexo; o fundo fica transparente)
+const sky = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false,
+  vertexShader: 'varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);}',
+  fragmentShader: `varying vec3 vP; void main(){ vec3 d = normalize(vP); float h = d.y;
+    vec3 col = mix(vec3(0.95,0.88,0.80), vec3(0.45,0.62,0.90), smoothstep(0.0,0.6,h)); if (h<0.0) col = vec3(0.55,0.52,0.48);
+    float s = max(dot(d, normalize(vec3(0.5,0.6,0.7))),0.0); col += vec3(1.0,0.9,0.7)*pow(s,40.0)*2.0;
+    gl_FragColor = vec4(col,1.0); #include <tonemapping_fragment>
+    #include <colorspace_fragment> }` });
+{ const es = new THREE.Scene(); es.add(new THREE.Mesh(new THREE.SphereGeometry(100, 32, 16), sky));
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(es, 0.015).texture; scene.environmentIntensity = 1.0; }
+
+const sun = new THREE.DirectionalLight(0xffe2b8, 3.0);
+sun.position.set(14, 18, 16); sun.target.position.set(0, 0, -6); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 80 }); sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.03;
+scene.add(sun, sun.target);
+scene.add(new THREE.HemisphereLight(0xcfe0ff, 0x8a7a60, 0.9));
+const fill = new THREE.DirectionalLight(0xbcd0ff, 0.9); fill.position.set(-8, 5, 14); scene.add(fill);
+
+// chão invisível que só recebe a sombra
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: 0.38 }));
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+
+const T = buildTruck(COR);
+scene.add(T.truck);
+T.halos.forEach(h => h.scale.set(1.0, 1.0, 1));
+
+const camera = new THREE.PerspectiveCamera(+q.get('fov') || 27, W / H, .1, 500);
+camera.position.set(+q.get('cx') || 11.5, +q.get('cy') || 3.4, +q.get('cz') || 13.5);
+camera.lookAt(+q.get('lx') || -0.8, +q.get('ly') || 1.7, +q.get('lz') || -5.2);
+renderer.render(scene, camera);
+window.ready = true;
+</script>
