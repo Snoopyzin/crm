@@ -1,0 +1,35 @@
+{
+    "name": "volmastertech/admin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jitendra Singh",
+            "email": "jitendra@webkul.com"
+        }
+    ],
+    "require": {
+        "volmastertech/attribute": "^1.0",
+        "volmastertech/contact": "^1.0",
+        "volmastertech/core": "^1.0",
+        "volmastertech/email": "^1.0",
+        "volmastertech/lead": "^1.0",
+        "volmastertech/product": "^1.0",
+        "volmastertech/tag": "^1.0",
+        "volmastertech/ui": "^1.0",
+        "volmastertech/user": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Admin\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\Admin\\Providers\\AdminServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "minimum-stability": "dev"
+}

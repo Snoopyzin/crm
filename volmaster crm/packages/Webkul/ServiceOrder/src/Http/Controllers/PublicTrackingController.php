@@ -1,0 +1,30 @@
+<?php
+
+namespace Webkul\ServiceOrder\Http\Controllers;
+
+use Illuminate\Routing\Controller;
+use Illuminate\View\View;
+use Webkul\ServiceOrder\Models\ServiceOrder;
+
+/**
+ * Public, unauthenticated "onde está meu veículo" tracking page -- the link
+ * is a Laravel signed URL (no extra token column needed, no login), meant
+ * to be sent to the client by WhatsApp/e-mail. Mirrors PublicFeedbackController
+ * in spirit: no admin auth, read-only.
+ */
+class PublicTrackingController extends Controller
+{
+    public function show(int $id): View
+    {
+        $serviceOrder = ServiceOrder::withoutGlobalScopes()
+            ->with('vehicle')
+            ->findOrFail($id);
+
+        return view('service_order::public.tracking', [
+            'serviceOrder' => $serviceOrder,
+            'steps' => ServiceOrder::customerTrackingSteps(),
+            'currentStep' => $serviceOrder->customerTrackingStepIndex(),
+            'isCancelled' => $serviceOrder->workshop_status === ServiceOrder::STAGE_CANCELADA,
+        ]);
+    }
+}

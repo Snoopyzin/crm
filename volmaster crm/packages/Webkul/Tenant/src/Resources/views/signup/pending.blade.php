@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Conta criada — Volmaster Tech</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; background: #f3f4f6; color: #1f2937; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .card { background: #fff; border-radius: 12px; padding: 40px; max-width: 440px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+        h1 { font-size: 20px; margin: 0 0 12px; }
+        p { color: #6b7280; line-height: 1.5; }
+        a.button { display: inline-block; margin-top: 20px; background: #2563eb; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; }
+        code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Recebemos seu cadastro, {{ $tenant->admin_name }}!</h1>
+        <p>Estamos preparando a conta de <strong>{{ $tenant->name }}</strong>. Isso leva só alguns instantes.</p>
+        <p>Acesse <code>{{ $tenantUrl }}</code> daqui a pouco para entrar com o e-mail e senha que você cadastrou.</p>
+        <a class="button" href="{{ $tenantUrl }}">Ir para minha conta</a>
+    </div>
+</body>
+</html>

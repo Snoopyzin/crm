@@ -1,0 +1,242 @@
+ROTEIRO DE TESTE E AJUSTES DO SOFTWARE - Mentoria Oficina de Alta Performance
+Análise de 18/11/2026 · Documento do patrão para a equipe de desenvolvimento
+(Transcrição fiel do PDF. As partes são: 1. Prompt de ajustes (A1-A6, B1-B9), 2. Roteiro de teste (72 linhas), 3. Critério de liberação.)
+
+SITUAÇÃO ENCONTRADA EM 18/11 (tabela do PDF)
+- Chave "Piloto ligado nesta oficina" desmarcada (Configurações > Indicadores e alertas) - Alta
+- Chaves de notificação no celular não geradas (Configurações > Indicadores e alertas) - Alta
+- SMS em modo "Simulado" - Média
+- Funções de acesso não batem com os cargos da mentoria (Configurações > Funções) - Alta
+- Nenhum colaborador cadastrado - Alta
+- Ficha de Enquadramento incompleta (valor da hora, impostos, CNPJ, início da mentoria, meta, gatilho, % de bônus) - Alta
+- Cor de crédito do cliente não existe (Cadastro e OS) - Alta
+- Termo de entrada e CPF/CNPJ opcionais (Cadastro) - Alta
+- Sem emissão de nota fiscal nem bloqueio de saída sem nota (Faturamento) - Alta
+- Peças e estoque vazios (Estoque) - Alta
+- Valor da hora digitado livre (OS de teste com R$ 10.000/h) (Itens da OS) - Média
+- Sem OS de retorno, chamado externo e diária de pátio automática (OS) - Média
+- "Não foi possível ler esta oficina" (Visão do mentor) - Média
+- Menu com mais de 30 itens para todos os perfis (Menu lateral) - Média
+- Título da OS mostra "Cadastro" com a OS em outra etapa (Tela da OS) - Baixa
+- Data e página de erro em inglês (Diagnóstico e erro 404) - Baixa
+
+==================================================================
+1. PROMPT DE AJUSTES PARA A EQUIPE (texto integral)
+==================================================================
+
+CONTEXTO
+Você está evoluindo o Volmaster CRM (volmastercrm.com/admin), sistema de gestão de oficinas diesel da Mentoria Oficina de Alta Performance. Os capítulos 1 a 12 da Especificação do Software já foram implementados em boa parte. Uma análise feita em 18/11/2026 encontrou o piloto desligado, configurações vazias e alguns módulos faltando. Faça os itens abaixo NA ORDEM. Não remova nada que já funciona. Todo texto da interface em português do Brasil, datas no formato dd/mm/aaaa hh:mm e fuso America/Sao_Paulo.
+
+==================================================
+PARTE A - LIGAR E CONFIGURAR O QUE JÁ EXISTE
+==================================================
+A1. OFICINA DE TESTE
+- Criar a oficina "Oficina Teste Mentoria", separada das oficinas reais. Todo o roteiro de teste roda nela.
+- Teste: os dados dela não aparecem em nenhuma outra oficina.
+
+A2. CHAVES DE NOTIFICAÇÃO NO CELULAR
+- Gerar as chaves VAPID (Configurações > Indicadores e alertas > Chaves das notificações no celular) e preencher o e-mail de contato.
+- Garantir que o sistema funciona como aplicativo instalável (PWA): manifest, ícone e service worker. No iPhone, a notificação só funciona com o app adicionado à tela inicial (iOS 16.4 ou superior): mostrar essa instrução na primeira vez que o usuário entrar pelo iPhone.
+- Criar o botão "Testar notificação" no perfil do usuário.
+- Teste: o botão faz chegar uma notificação em um Android e em um iPhone; tocar nela abre o sistema.
+
+A3. SMS DE RESERVA
+- Manter "Simulado" na oficina de teste até o fim do roteiro. Antes de liberar às oficinas, configurar o provedor contratado, o limite mensal e o custo por SMS.
+- Teste: com "Simulado", o relatório de SMS registra o que teria sido enviado; com o provedor real, um alerta crítico chega por SMS.
+
+A4. PERFIS = CARGOS DA MENTORIA
+- Substituir as funções atuais (Administrador, Consultor, Diagnóstico, Financeiro, Mecânico, Programador) por estes perfis: Proprietário (administrador da oficina), Gerente, Chefe de oficina, Consultor técnico, Técnico, Peças, Financeiro, Auxiliar de copa e zeladoria. Manter um perfil Mentor (só leitura, todas as oficinas) e um perfil Suporte Volmaster (interno).
+- Migrar os usuários existentes para o perfil equivalente. "Programador" vira Suporte Volmaster.
+- Um usuário pode ter mais de um perfil (acúmulo de cargos): recebe a soma das permissões, MAS se um dos perfis for Técnico e nenhum outro perfil dele der acesso a valores, os valores continuam ocultos.
+- O cadastro de Colaboradores (cargos marcados) e o perfil do usuário do sistema devem ficar sincronizados: marcar o cargo no colaborador ligado a um usuário atualiza o perfil desse usuário.
+- Teste: cada perfil entra e vê só o que o item B8 define.
+
+A5. COLABORADORES E FICHA DE ENQUADRAMENTO
+- Na oficina de teste, cadastrar um colaborador por cargo, cada um ligado a um usuário do sistema.
+- Preencher toda a Ficha de Enquadramento da oficina de teste: valor da hora, impostos, comissões, despesas variáveis, margem desejada de peças, lucro desejado, encargos, data de início da mentoria, meta de faturamento, gatilho da Fase 2 e % de bônus por cargo.
+- Tornar obrigatórios para ligar o piloto: valor da hora, impostos, data de início da mentoria e pelo menos um colaborador com perfil Gerente ou Proprietário. Se faltar algo, a chave do piloto mostra o que falta e não liga.
+- Teste: tentar ligar o piloto com a Ficha incompleta mostra a lista do que falta.
+
+A6. LIGAR O PILOTO
+- Ligar a chave "Piloto de indicadores e alertas" só na oficina de teste, configurar o horário comercial e restaurar as barreiras padrão da mentoria.
+- Criar o "modo de teste" das barreiras: um campo que divide todos os prazos por 10 (ex.: 2 h vira 12 min), só para a oficina de teste, para o roteiro não levar dias.
+- Teste: com o piloto ligado, uma OS sem mecânico e sem diagnóstico NÃO avança para Orçamento.
+
+==================================================
+PARTE B - O QUE FALTA CONSTRUIR OU CORRIGIR
+==================================================
+B1. COR DE CRÉDITO DO CLIENTE
+- Campo no cadastro do cliente: Verde (paga em dia), Amarelo (atrasa às vezes), Vermelho (inadimplente), com data, usuário e observação. Visível só para Consultor, Financeiro, Gerente e Proprietário.
+- Na abertura da OS, o consultor pede a análise de crédito; o Financeiro registra a cor (prazo 30 min, barreira FIN-01).
+- Sugestão automática: cliente com título vencido há mais de 15 dias fica Vermelho; com atraso nos últimos 90 dias, Amarelo. O Financeiro pode alterar, com justificativa.
+- Bloqueios (piloto ligado): a OS não sai do Cadastro sem cor registrada; condição "a prazo" para cliente Vermelho vai para a fila de alçadas do Proprietário.
+- A informação de crédito NUNCA aparece no link de acompanhamento do cliente nem na OS impressa.
+- Alimenta CON-03 e as travas do consultor e do financeiro.
+- Teste: cliente com boleto vencido há 20 dias aparece Vermelho; tentar faturar a prazo cria pedido na fila de alçadas.
+
+B2. TERMO DE ENTRADA E DADOS OBRIGATÓRIOS
+- Com o piloto ligado, para a OS sair do Cadastro são obrigatórios: CPF/CNPJ válido (validar dígitos), placa, km, nível de combustível, pelo menos 4 fotos do veículo, itens do veículo, autorização de rodagem (sim/não) e aceite do cliente no termo.
+- Aceite do termo: assinatura na tela (tablet/celular) OU aceite pelo link enviado ao WhatsApp do cliente, com data, hora e IP.
+- Exceção: serviço só de software (sem veículo) dispensa fotos, km e combustível.
+- Alimenta CON-02 e CON-13.
+- Teste: sem fotos ou sem aceite, o botão de avançar mostra o que falta.
+
+B3. NOTA FISCAL E SAÍDA DO CAMINHÃO
+- Integrar a emissão de NFS-e (serviço) e NF-e (peças) por um emissor via API (ex.: Focus NFe, eNotas, PlugNotas ou o emissor que a Volmaster já usa). Enquanto a integração não estiver pronta: campo obrigatório "Número da nota" + anexo do XML/PDF, registrado pelo Financeiro.
+- Criar o botão "Registrar saída do caminhão" no Faturamento. Com o piloto ligado, ele só libera com: nota registrada E (pagamento confirmado OU acordo assinado OU cliente frota com faturamento mensal marcado no cadastro).
+- Forçar a saída sem isso exige justificativa, avisa o Gerente e o Proprietário na hora (alerta crítico) e cria trava pendente para o Consultor e o Financeiro.
+- Alimenta FIN-02, CON-07 e o selo/indicador "saídas sem NF" do relatório diário.
+- Teste: saída sem nota fica bloqueada; forçada com justificativa, gera alerta crítico e trava pendente.
+
+B4. MÓDULO DE PEÇAS
+- Painel de Peças (perfil Peças): fila de itens a precificar com cronômetro (20 min se tem em estoque, 40 min se precisa cotar), compras do dia, peças a entregar ao técnico, NF de entrada a lançar, inventário rotativo da semana.
+- Na OS, o técnico envia a "relação de peças" do diagnóstico; cada linha vira um item a precificar para Peças.
+- Preço mínimo: custo ÷ (1 − % impostos − % despesas variáveis − % margem desejada), com os percentuais da Ficha. Preço abaixo do mínimo vai para a fila de alçadas (assunto já existe).
+- Pedido de compra ligado à OS autorizada, com fornecedor, prazo prometido e entrega ao técnico (carimbo).
+- Estoque: entrada por NF de entrada; saída SÓ por lançamento em OS; ajuste de saldo só com aprovação (fila de alçadas); inventário rotativo semanal com contagem e divergência.
+- Peças paradas há mais de 180 dias: lista e valor.
+- Alimenta PEC-01 a PEC-13, TEC-05, TEC-06 e DRE-07.
+- Teste: precificar fora do prazo deixa o item vermelho e dispara a barreira; vender abaixo do mínimo pede alçada; baixar peça sem OS é impossível.
+
+B5. VALOR DA HORA E TEMPO PADRÃO
+- Ao adicionar um serviço, o valor unitário da hora vem da Ficha (valor da hora de mão de obra) e as horas vêm do catálogo de serviços (tempo padrão).
+- Alterar o valor da hora na OS para baixo do preço mínimo da hora (DRE) ou para cima de 3 vezes o valor da Ficha mostra aviso; abaixo do mínimo exige alçada.
+- Corrigir a OS de teste #11 (6 h × R$ 10.000) ou cancelá-la, para não distorcer o relatório diário.
+- Teste: serviço do catálogo entra com o valor da Ficha; R$ 10.000/h mostra aviso.
+
+B6. RETORNO/GARANTIA, CHAMADO EXTERNO E DIÁRIA DE PÁTIO
+- "Abrir OS de retorno" a partir de uma OS entregue: vincula à OS de origem, prazo de diagnóstico de 2 h (barreira), classificação obrigatória da causa (execução, peça, diagnóstico, uso do cliente) e responsável. Dentro da garantia da Ficha (90 dias), sem cobrança por padrão. Alimenta CHE-10, CHE-13, CHE-14, TEC-10 e TEC-02.
+- "Chamado externo": autorização do cliente antes da saída da viatura, pré-diagnóstico remoto em 30 min, km e horário da viatura. Alimenta CON-17 e CHE-15.
+- Diária de pátio: a partir das horas definidas na Ficha (após pronto, ou com orçamento não autorizado), o sistema calcula as diárias, avisa o Consultor e inclui o valor na OS, com opção de isentar (alçada do Gerente).
+- Teste: OS de retorno aparece ligada à original e entra no indicador de retrabalho; caminhão pronto parado além do prazo ganha a diária.
+
+B7. CORREÇÕES
+- Visão do mentor: corrigir "Não foi possível ler esta oficina". Uma oficina sem dados deve aparecer com traços, nunca com erro.
+- Título da OS: mostrar a etapa ATUAL (hoje mostra "Cadastro" em OS que estão em Orçamento).
+- Datas em português em todo o sistema (ex.: "20 Oct 2026 09:15AM" vira "20/10/2026 09:15").
+- Página de erro 404 em português, com o contato de suporte real da Volmaster (hoje mostra support@example.com).
+- Teste: navegar por todas as telas sem ver texto em inglês.
+
+B8. MENU E PERMISSÕES POR PERFIL
+- Cada perfil vê só os itens do seu trabalho:
+  * Técnico: Minhas tarefas (cronômetro), Meu bônus. Nada de valores.
+  * Chefe de oficina: Quadro de pátio, etapas Diagnóstico a Veículo em Teste, Minha rotina, Registros (auditorias), Meu bônus.
+  * Consultor: Agenda, Cadastro, todas as etapas da OS, Marketing, Minha rotina, Meu bônus.
+  * Peças: Painel de Peças, Estoque, Grupos, Minha rotina, Meu bônus.
+  * Financeiro: Financeiro (todas as abas), Faturamento, Minha rotina, Meu bônus.
+  * Copa e zeladoria: Registros (só os checklists dela), Meu bônus.
+  * Gerente: tudo da oficina, exceto Configurações de usuários e Ficha (só leitura).
+  * Proprietário: tudo da oficina. Tela inicial = Painel do Dono (versão celular no celular).
+  * Mentor: Visão do mentor e Painel do Dono de cada oficina, só leitura.
+- Esconder itens não é suficiente: a rota e a API também devem recusar (403) quem não tem permissão. Para o Técnico, as respostas da API NÃO podem conter valores, descontos, comissões, margens, crédito nem dados financeiros.
+- Remover do menu os itens que ninguém da oficina usa no dia a dia (Impact e Recomendações vão para Ajuda e recursos).
+- Teste: logado como Técnico, abrir /admin/commissions, /admin/financeiro/dre e /admin/service-orders/{id} pelo endereço direto retorna acesso negado ou a OS sem nenhum valor; conferir também na aba Rede do navegador.
+
+B9. REMUNERAÇÃO VARIÁVEL: COMISSÃO E BÔNUS
+- Criar na Ficha o campo "Modelo de remuneração variável" com as opções: Bônus por indicadores (padrão da mentoria), Comissão, ou Ambos.
+- Com "Bônus", a tela de Comissões some do menu e não entra na DRE; com "Ambos", o bônus mostra a comissão do mês ao lado, para o dono enxergar o total variável de cada pessoa.
+- Teste: trocar a opção muda o menu e a DRE.
+
+REGRAS GERAIS
+- Nenhum registro de validação, trava, alçada ou movimento de estoque é apagado; correções geram novo registro com justificativa.
+- Tudo o que é regra (prazos, percentuais, metas) vem da configuração da oficina, nunca fixo no código.
+- Ao terminar cada item, rodar o teste dele na Oficina Teste Mentoria e registrar o resultado.
+
+==================================================================
+2. ROTEIRO DE TESTE COMPLETO (72 linhas: Nº | Ação | Resultado esperado)
+Uma OS de teste percorre as 8 etapas, com uma pessoa em cada perfil. Modo de teste das barreiras ligado (prazos ÷ 10).
+==================================================================
+PREPARAÇÃO
+1 | Oficina Teste Mentoria com a Ficha completa e o piloto ligado (itens A1 a A6) | pronta para o teste
+2 | Um usuário de teste para cada perfil: Proprietário, Gerente, Chefe, Consultor, Técnico, Peças, Financeiro, Zeladoria e Mentor | todos entram
+3 | Um Android e um iPhone com o sistema na tela inicial e notificações permitidas | prontos
+4 | Um cliente de teste com WhatsApp real de alguém da equipe | cadastrado
+ETAPA 0 - ACESSO E PERFIS
+5 | Cada usuário entra | vê só o menu do seu perfil (item B8)
+6 | Técnico abre pelo endereço direto /admin/commissions, /admin/financeiro/dre e uma OS | acesso negado, ou a OS sem nenhum valor em reais, inclusive na aba Rede do navegador
+7 | Proprietário entra pelo celular | cai direto no Painel do Dono, versão celular
+8 | Botão "Testar notificação" | notificação chega no Android e no iPhone
+ETAPA 1 - AGENDAMENTO E ATENDIMENTO (Consultor e Financeiro)
+9 | Consultor agenda o cliente de teste | a agenda mostra a ocupação do dia
+10 | Consultor registra a chegada e deixa passar o prazo da recepção | alerta nível 1 para o Consultor; sem ação, nível 2 para o Gerente
+11 | Consultor tenta avançar sem fotos, sem km ou sem aceite do termo | bloqueado, com a lista do que falta
+12 | Consultor tenta avançar sem a cor de crédito | bloqueado
+13 | Financeiro registra a cor de crédito dentro do prazo | CON-03 e FIN-01 cumpridos
+14 | Cliente aceita o termo pelo link do WhatsApp | a OS mostra data, hora e IP do aceite
+ETAPA 2 - DIAGNÓSTICO (Chefe e Técnico)
+15 | Chefe designa o técnico | carimbo de designação; passou do prazo, alerta para o Chefe
+16 | Técnico inicia o diagnóstico pelo celular | cronômetro verde
+17 | Técnico passa do tempo alvo e finaliza | o sistema pede a causa do atraso
+18 | Técnico tenta fechar o laudo sem fotos ou medições | bloqueado
+19 | Técnico envia a relação de peças | itens aparecem no Painel de Peças para precificar
+20 | Consultor tenta abrir o orçamento antes do visto do Chefe | bloqueado
+21 | Chefe devolve o diagnóstico uma vez e depois aprova | TEC-03 registra a devolução
+ETAPA 3 - ORÇAMENTO (Peças, Chefe e Consultor)
+22 | Peças precifica um item do estoque em menos de 20 min e um cotado depois de 40 min | o segundo fica vermelho e dispara a barreira
+23 | Peças lança uma peça abaixo do preço mínimo | pedido na fila de alçadas
+24 | Serviço do catálogo entra na OS | com o valor da hora da Ficha e as horas do tempo padrão
+25 | Alguém digita R$ 10.000 por hora | aviso na tela
+26 | Chefe envia a OS completa ao Consultor depois de 1 h (modo de teste: 6 min) | alerta para o Chefe
+27 | Consultor deixa passar as 2 h do orçamento (modo de teste: 12 min) | nível 1 para Consultor e Chefe; nível 2 para o Gerente; nível 3 para o Proprietário, por notificação e SMS
+28 | Consultor envia o orçamento por WhatsApp | carimbo de envio; os alertas pendentes se encerram com aviso de "resolvido"
+ETAPA 4 - NEGOCIAÇÃO (Consultor)
+29 | Desconto dentro da alçada do Consultor | passa direto
+30 | Desconto acima da alçada | bloqueado até o Gerente aprovar na fila de alçadas
+31 | Condição a prazo para cliente Vermelho | pedido vai ao Proprietário, com prazo de 24 h
+32 | Cliente aprova parte do orçamento | itens recusados registrados com motivo, entram no retorno em 7 dias (CON-12)
+33 | Tentar liberar a execução sem aprovação registrada | bloqueado
+ETAPA 5 - EXECUÇÃO (Chefe, Técnico e Peças)
+34 | Peças registra a compra e a entrega da peça ao técnico | carimbos de compra e entrega
+35 | Tentar dar baixa numa peça do estoque sem OS | impossível
+36 | Técnico inicia um serviço de 1 h de tempo padrão | verde até 1 h, amarelo até 1 h 12, vermelho depois
+37 | Passou de 20% acima do padrão | alerta para o Chefe; passou de 50% → alerta também para o Gerente
+38 | Técnico pausa com motivo e retoma | a pausa não conta como tempo trabalhado
+39 | Técnico separa as peças velhas e o cliente assina o termo | TEC-11 cumprido
+40 | Consultor deixa passar 24 h sem atualizar o cliente | alerta para o Consultor (CON-06)
+41 | Em motor ou transmissão, tentar concluir sem o checklist de montagem | bloqueado
+ETAPA 6 - VEÍCULO EM TESTE (Chefe)
+42 | Iniciar o teste com condutor sem a categoria de CNH exigida | bloqueado
+43 | Iniciar sem autorização de rodagem no termo | bloqueado
+44 | Registrar km e horário de saída e volta e o resultado | CHE-08 cumprido
+ETAPA 7 - FATURAMENTO (Consultor, Peças e Financeiro)
+45 | Checklist de saída com horas reais e próxima revisão | CHE-09 e CON-14 cumpridos
+46 | Divergência entre peças aplicadas e lançadas | Financeiro não fatura até Peças corrigir
+47 | Tentar registrar a saída sem nota | bloqueado
+48 | Forçar a saída com justificativa | alerta crítico ao Proprietário e ao Gerente na hora; trava pendente para Consultor e Financeiro
+49 | Emitir a nota e gerar a cobrança pelo Asaas | quando o pagamento entra, o status muda sozinho
+50 | Cliente frota com faturamento mensal | saída liberada sem pagamento, só com a nota
+ETAPA 8 - PÓS-VENDA (Consultor)
+51 | Deixar passar 7 dias sem contato (modo de teste: 17 h) | alerta para o Consultor
+52 | Registrar a nota 0 a 10 do cliente | entra em CON-15
+53 | Abrir uma OS de retorno a partir da OS entregue | ligada à original, pede a causa e entra no retrabalho (CHE-10)
+54 | Registrar uma reclamação | prazo de 48 h para o Gerente, com alerta em 36 h
+ETAPA 9 - ROTINA DO DIA (Financeiro, Gerente e Zeladoria)
+55 | Financeiro lança uma conta sem escolher a conta do plano | não fecha a conciliação do dia
+56 | Financeiro fecha o caixa com diferença sem justificativa | alerta crítico ao Gerente e ao Proprietário
+57 | Relatório diário ao dono enviado no horário | chega ao Proprietário e conta em FIN-08
+58 | Gerente salva as 5 linhas do dia | conta em GER-12
+59 | Zeladoria registra os checklists | ZEL-01 e ZEL-02 aparecem no Painel
+60 | Alerta durante o horário de silêncio | o comum espera; o crítico toca na hora
+ETAPA 10 - FECHAMENTO DO MÊS E BÔNUS (Gerente e Proprietário)
+61 | "Calcular as notas" | nota de cada colaborador, na fase certa pela data de início da mentoria
+62 | Trava confirmada | zera o bônus de quem a recebeu
+63 | Colaborador abre "Meu bônus" | vê marcador por marcador e registra a ciência
+64 | Proprietário aprova até o 5º dia útil | exporta a folha em CSV
+65 | Alterar uma nota depois de aprovada | exige estorno com justificativa
+66 | DRE do mês fechada | só reabre por pedido na fila de alçadas
+ETAPA 11 - PAINEL DO DONO E VISÃO DO MENTOR
+67 | Painel do Dono | mostra a OS de teste em cada etapa por onde passou, com as cores certas
+68 | Tocar num indicador | lista as OS que formam o número
+69 | PDF para o encontro de mentoria | sai completo
+70 | Versão celular do Painel no 4G | abre rápido e mostra caixa, alertas e fila de alçadas
+71 | Visão do mentor | mostra a Oficina Teste e as outras oficinas sem erro e sem valores em reais
+72 | Celular sem internet (com o provedor de SMS real configurado) | o alerta crítico chega por SMS
+
+==================================================================
+3. CRITÉRIO PARA LIBERAR ÀS SEIS OFICINAS
+==================================================================
+- Piloto: Parte A inteira, B1, B2, B5, B7 e B8; Etapas 0 a 6 e 11 do roteiro → uma oficina real, por 2 a 3 semanas, além da Oficina Teste.
+- Liberação geral: Parte B inteira; o roteiro completo sem nenhuma linha reprovada → as seis oficinas.
+- Antes de ligar o piloto numa oficina real: Ficha de Enquadramento completa, colaboradores cadastrados com os perfis certos, celulares com o app instalado e as notificações permitidas, e a equipe treinada.
+- Nas duas primeiras semanas da oficina piloto, a equipe de desenvolvimento acompanha todos os dias o relatório de alertas e de bloqueios forçados; alerta que dispara demais ou bloqueio que trava sem motivo é ajustado na configuração, sem desligar o piloto.
+- Decisão do proprietário de cada oficina: modelo de remuneração variável na Ficha (bônus por indicadores = padrão da mentoria, comissão, ou os dois).

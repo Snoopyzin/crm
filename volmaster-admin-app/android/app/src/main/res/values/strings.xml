@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Volmaster Tech</string>
+    <string name="title_activity_main">Volmaster Tech</string>
+    <string name="package_name">com.volmastertech.admin</string>
+    <string name="custom_url_scheme">com.volmastertech.admin</string>
+</resources>
