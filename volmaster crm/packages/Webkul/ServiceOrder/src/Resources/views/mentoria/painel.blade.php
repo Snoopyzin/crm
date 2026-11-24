@@ -33,15 +33,15 @@
             @endforeach
         </div>
 
-        <div class="{{ $caixa }}">
-            <p class="{{ $titulo }}">Indicadores da DRE e da precificação</p>
+        <details class="{{ $caixa }} vm-fold">
+            <summary class="{{ $titulo }}">Indicadores da DRE e da precificação</summary>
             @include('service_order::mentoria._linhas', ['linhas' => $painel['dre'], 'periodo' => $periodo])
             <p class="mt-2 text-xs text-gray-500">Detalhes em <a class="text-blue-600 hover:underline" href="{{ route('admin.financeiro.dre', ['periodo' => $periodo]) }}">DRE e preços</a>.</p>
-        </div>
+        </details>
 
         {{-- Bloco 2 - Fluxo do caminhão --}}
-        <div class="{{ $caixa }}">
-            <p class="{{ $titulo }}">Fluxo do caminhão (8 etapas)</p>
+        <details class="{{ $caixa }} vm-fold">
+            <summary class="{{ $titulo }}">Fluxo do caminhão (8 etapas)</summary>
 
             <p class="mb-3 rounded-md bg-gray-50 px-3 py-2 text-sm dark:bg-gray-800 dark:text-gray-200">
                 <b>{{ $painel['fluxo']['no_patio'] }}</b> caminhões no pátio agora &middot;
@@ -59,29 +59,29 @@
                     </div>
                 @endforeach
             </div>
-        </div>
+        </details>
 
         {{-- Bloco 3 - Peças e estoque --}}
-        <div class="{{ $caixa }}">
-            <p class="{{ $titulo }}">Peças e estoque <span class="text-sm font-normal text-gray-500">&middot; valor total do estoque: R$ {{ number_format($painel['pecas']['valor_estoque'], 2, ',', '.') }}</span></p>
+        <details class="{{ $caixa }} vm-fold">
+            <summary class="{{ $titulo }}">Peças e estoque <span class="text-sm font-normal text-gray-500">&middot; valor total do estoque: R$ {{ number_format($painel['pecas']['valor_estoque'], 2, ',', '.') }}</span></summary>
             @include('service_order::mentoria._linhas', ['linhas' => $painel['pecas']['linhas'], 'periodo' => $periodo])
-        </div>
+        </details>
 
         {{-- Bloco 4 - Caixa e financeiro --}}
-        <div class="{{ $caixa }}">
-            <p class="{{ $titulo }}">Caixa e financeiro</p>
+        <details class="{{ $caixa }} vm-fold">
+            <summary class="{{ $titulo }}">Caixa e financeiro</summary>
             @include('service_order::mentoria._linhas', ['linhas' => $painel['financeiro']['linhas'], 'periodo' => $periodo])
-        </div>
+        </details>
 
         {{-- Bloco 5 - Gestão do gerente e RH --}}
-        <div class="{{ $caixa }}">
-            <p class="{{ $titulo }}">Gestão do gerente e RH</p>
+        <details class="{{ $caixa }} vm-fold">
+            <summary class="{{ $titulo }}">Gestão do gerente e RH</summary>
             @include('service_order::mentoria._linhas', ['linhas' => $painel['gestao']['linhas'], 'periodo' => $periodo])
-        </div>
+        </details>
 
         {{-- Bloco 6 - Equipe, bônus e o próprio dono --}}
-        <div class="{{ $caixa }}">
-            <p class="{{ $titulo }}">Equipe e bônus</p>
+        <details class="{{ $caixa }} vm-fold">
+            <summary class="{{ $titulo }}">Equipe e bônus</summary>
 
             <p class="mb-3 text-sm dark:text-gray-200">
                 Fila de alçadas do dono:
@@ -121,16 +121,16 @@
             @else
                 <p class="text-sm text-gray-500">Nenhuma nota de bônus calculada neste mês ainda (o cálculo é feito no dia 1 do mês seguinte).</p>
             @endif
-        </div>
+        </details>
 
-        <div class="{{ $caixa }}">
-            <p class="{{ $titulo }}">O próprio dono</p>
+        <details class="{{ $caixa }} vm-fold">
+            <summary class="{{ $titulo }}">O próprio dono</summary>
             @include('service_order::mentoria._linhas', ['linhas' => $painel['dono']['linhas'], 'periodo' => $periodo])
-        </div>
+        </details>
 
         @if ($anterior)
-            <div class="{{ $caixa }}">
-                <p class="{{ $titulo }}">Comparação com {{ $anterior['periodo_rotulo'] }}</p>
+            <details class="{{ $caixa }} vm-fold">
+                <summary class="{{ $titulo }}">Comparação com {{ $anterior['periodo_rotulo'] }}</summary>
                 <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
                     @foreach ($anterior['cartoes'] as $cartao)
                         <div class="rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-800">
@@ -139,7 +139,7 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </details>
         @endif
     </div>
 </x-admin::layouts>

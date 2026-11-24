@@ -14,56 +14,66 @@
     <div class="sidebar-scroll h-[calc(100vh-100px)] overflow-y-auto group-[.sidebar-collapsed]/container:overflow-visible">
         <nav class="sidebar-rounded grid w-full gap-2">
             <!-- Navigation Menu -->
-            @foreach (menu()->getItems('admin') as $menuItem)
-                <div class="px-4 group/item {{ $menuItem->isActive() ? 'active' : 'inactive' }}">
-                    <a
-                        class="flex gap-2 p-1.5 items-center cursor-pointer hover:rounded-lg {{ $menuItem->isActive() == 'active' ? 'bg-brandColor rounded-lg' : ' hover:bg-gray-100 hover:dark:bg-gray-950' }} peer"
-                        href="{{ ! in_array($menuItem->getKey(), ['settings']) && $menuItem->haveChildren() ? 'javascript:void(0)' : $menuItem->getUrl() }}"
-                        @mouseleave="!isMenuActive ? hoveringMenu = '' : {}"
-                        @mouseover="hoveringMenu='{{$menuItem->getKey()}}'"
-                        @click="isMenuActive = !isMenuActive"
-                    >
-                        <span data-vm-icon="{{ $menuItem->getKey() }}" class="{{ $menuItem->getIcon() }} text-2xl {{ $menuItem->isActive() ? 'text-white' : ''}}"></span>
+            @php
+                /**
+                 * Menu agrupado por assunto: a lista inicial fica curta e cada grupo
+                 * abre e fecha. Item que não estiver listado aqui cai em "Mais" e nada
+                 * some do menu; permissão continua valendo (menu()->getItems já filtra).
+                 */
+                $grupos = [
+                    '' => ['tecnico', 'dashboard'],
+                    'Clientes' => ['cadastro', 'clientes_busca'],
+                    'Ordem de Serviço' => ['ordem_servico', 'diagnostico', 'orcamento', 'negociacao', 'em_execucao', 'veiculo_teste', 'faturamento', 'pos_venda'],
+                    'Pátio e agenda' => ['rotina_patio', 'rotina_painel', 'rotina_agenda'],
+                    'Financeiro' => ['financeiro_rotina', 'financeiro_dre', 'comissoes'],
+                    'Gestão' => ['painel_dono', 'indicadores_mentoria', 'alcadas', 'marketing', 'mentor_mentoria', 'registros_mentoria'],
+                    'Equipe' => ['colaboradores', 'bonus_mentoria', 'bonus_meu'],
+                    'Estoque e catálogo' => ['estoque', 'servicos_catalogo', 'grupos'],
+                    '~fim' => ['settings', 'help'],
+                ];
 
-                        <div class="flex-1 flex justify-between items-center text-gray-600 dark:text-gray-300 font-medium whitespace-nowrap group-[.sidebar-collapsed]/container:hidden {{ $menuItem->isActive() ? 'text-white' : ''}} group">
-                            <p>{{ core()->getConfigData('general.settings.menu.'.$menuItem->getKey()) ?: $menuItem->getName() }}</p>
-                        
-                            @if ( ! in_array($menuItem->getKey(), ['settings']) && $menuItem->haveChildren())
-                                <i class="icon-right-arrow rtl:icon-left-arrow invisible text-2xl group-hover/item:visible {{ $menuItem->isActive() ? 'text-white' : ''}}"></i>
-                            @endif
-                        </div>
-                    </a>
+                $todos = collect(menu()->getItems('admin'))->keyBy(fn ($i) => $i->getKey());
+                $usados = collect($grupos)->flatten()->all();
+                $grupos['Mais'] = $todos->keys()->reject(fn ($k) => in_array($k, $usados))->values()->all();
 
-                    <!-- Submenu -->
-                    @if (
-                        ! in_array($menuItem->getKey(), ['settings'])
-                        && $menuItem->haveChildren()
-                    )
-                        <div
-                            class="absolute top-0 hidden flex-col bg-gray-100 ltr:left-[235px] rtl:right-[234px]"
-                            :class="[isMenuActive && (hoveringMenu == '{{$menuItem->getKey()}}') ? '!flex' : 'hidden']"
-                        >
-                            <div class="sidebar-rounded fixed z-[1000] h-full min-w-[140px] max-w-max bg-white pt-4 after:-right-[30px] dark:border-gray-800 dark:bg-gray-900 max-lg:hidden ltr:border-r rtl:border-x">
-                                <div class="journal-scroll h-[calc(100vh-100px)] overflow-hidden">
-                                    <nav class="grid w-full gap-2">
-                                        @foreach ($menuItem->getChildren() as $subMenuItem)
-                                            <div class="px-4 group/item {{ $menuItem->isActive() ? 'active' : 'inactive' }}">
-                                                <a
-                                                    href="{{ $subMenuItem->getUrl() }}"
-                                                    class="flex gap-2.5 p-2 items-center cursor-pointer hover:rounded-lg {{ $subMenuItem->isActive() == 'active' ? 'bg-brandColor rounded-lg' : ' hover:bg-gray-100 hover:dark:bg-gray-950' }} peer"
-                                                >
-                                                    <p class="text-gray-600 dark:text-gray-300 font-medium whitespace-nowrap {{ $subMenuItem->isActive() ? 'text-white' : ''}}">
-                                                        {{ core()->getConfigData('general.settings.menu.'.$subMenuItem->getKey()) ?? $subMenuItem->getName() }}
-                                                    </p>
-                                                </a>
-                                            </div>
-                                        @endforeach
-                                    </nav>
-                                </div>
+                // coloca o "Mais" antes de Configurações/Ajuda
+                $fim = $grupos['~fim']; unset($grupos['~fim']);
+                $grupos['~fim'] = $fim;
+            @endphp
+
+            @foreach ($grupos as $rotuloGrupo => $chaves)
+                @php
+                    $itensGrupo = collect($chaves)->map(fn ($k) => $todos->get($k))->filter();
+                    $ehFlat = $rotuloGrupo === '' || $rotuloGrupo === '~fim';
+                    $grupoAtivo = $itensGrupo->contains(fn ($i) => $i->isActive());
+                    $idGrupo = \Illuminate\Support\Str::slug($rotuloGrupo ?: 'principal');
+                @endphp
+
+                @if ($itensGrupo->isNotEmpty())
+                    @if ($ehFlat)
+                        @foreach ($itensGrupo as $menuItem)
+                            @include('admin::components.layouts.sidebar.desktop.item')
+                        @endforeach
+                    @else
+                        <div class="vm-group" data-vm-group="{{ $idGrupo }}" data-vm-open="{{ $grupoAtivo ? 1 : 0 }}">
+                            <button
+                                type="button"
+                                class="vm-group-toggle"
+                                data-vm-group-toggle
+                                aria-expanded="{{ $grupoAtivo ? 'true' : 'false' }}"
+                            >
+                                <span>{{ $rotuloGrupo }}</span>
+                                <span class="vm-chevron" aria-hidden="true"></span>
+                            </button>
+
+                            <div class="vm-group-body {{ $grupoAtivo ? '' : 'hidden' }} grid gap-2">
+                                @foreach ($itensGrupo as $menuItem)
+                                    @include('admin::components.layouts.sidebar.desktop.item')
+                                @endforeach
                             </div>
                         </div>
                     @endif
-                </div>
+                @endif
             @endforeach
         </nav>
     </div>
@@ -77,6 +87,36 @@
 </div>
 
 @pushOnce('scripts')
+    <script>
+        /* Grupos do menu: abre/fecha e lembra o que o usuário deixou aberto. */
+        (function () {
+            var KEY = 'vm_menu_open';
+            function lido() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+            function gravar(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+            function aplicar(g, aberto) {
+                g.querySelector('.vm-group-body').classList.toggle('hidden', !aberto);
+                g.querySelector('[data-vm-group-toggle]').setAttribute('aria-expanded', aberto ? 'true' : 'false');
+                g.classList.toggle('is-open', aberto);
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                var salvo = lido();
+                document.querySelectorAll('[data-vm-group]').forEach(function (g) {
+                    var id = g.getAttribute('data-vm-group');
+                    var aberto = g.getAttribute('data-vm-open') === '1' || salvo[id] === 1;
+                    aplicar(g, aberto);
+                });
+            });
+            document.addEventListener('click', function (e) {
+                var b = e.target.closest('[data-vm-group-toggle]');
+                if (!b) return;
+                var g = b.closest('[data-vm-group]');
+                var aberto = b.getAttribute('aria-expanded') !== 'true';
+                aplicar(g, aberto);
+                var o = lido(); o[g.getAttribute('data-vm-group')] = aberto ? 1 : 0; gravar(o);
+            });
+        })();
+    </script>
+
     <script
         type="text/x-template"
         id="v-sidebar-collapse-template"

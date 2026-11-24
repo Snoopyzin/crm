@@ -977,3 +977,71 @@ span[data-vm-icon="servicos_catalogo"]{--vm-i:url("data:image/svg+xml,%3Csvg xml
 span[data-vm-icon="grupos"]{--vm-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 6.5a2 2 0 0 1 2-2H10l2 2.5h6.5a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z'/%3E%3C/svg%3E")}
 span[data-vm-icon="settings"]{--vm-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h10M18 7h2M4 17h2M10 17h10'/%3E%3Ccircle cx='16' cy='7' r='2'/%3E%3Ccircle cx='8' cy='17' r='2'/%3E%3C/svg%3E")}
 span[data-vm-icon="help"]{--vm-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E")}
+
+/* ==== Minimalismo: menu em grupos + seções recolhíveis ==================== */
+.vm-group { margin-top: -2px; }
+
+.vm-group-toggle {
+    display: flex;
+    width: calc(100% - 32px);
+    margin: 0 16px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 6px 7px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #6F86A6;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    transition: color .15s;
+}
+
+.vm-group-toggle:hover { color: #fff; }
+
+.vm-chevron {
+    width: 7px; height: 7px;
+    border-right: 1.75px solid currentColor;
+    border-bottom: 1.75px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform .18s;
+    margin-right: 4px;
+}
+
+.vm-group-toggle[aria-expanded="true"] .vm-chevron { transform: rotate(45deg); }
+
+/* menu recolhido (só ícones): esconde os títulos e mostra tudo */
+.sidebar-collapsed .vm-group-toggle { display: none; }
+.sidebar-collapsed .vm-group-body { display: grid !important; }
+.sidebar-collapsed .vm-group { margin-top: 0; padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, .07); }
+
+/* seções recolhíveis das telas */
+details.vm-fold > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 0;
+}
+
+details.vm-fold > summary::-webkit-details-marker { display: none; }
+
+details.vm-fold > summary::after {
+    content: "";
+    flex: none;
+    width: 8px; height: 8px;
+    border-right: 2px solid #8EA0B8;
+    border-bottom: 2px solid #8EA0B8;
+    transform: rotate(45deg);
+    transition: transform .18s;
+    margin-right: 4px;
+}
+
+details.vm-fold[open] > summary { margin-bottom: 12px; }
+details.vm-fold[open] > summary::after { transform: rotate(-135deg); }
+details.vm-fold > summary:hover { color: var(--brand-color); }
