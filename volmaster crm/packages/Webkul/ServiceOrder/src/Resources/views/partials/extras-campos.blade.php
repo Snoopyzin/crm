@@ -25,6 +25,11 @@
         @endforeach
     </div>
 
+    <label class="col-span-2 flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 max-sm:col-span-1">
+        <input type="checkbox" name="extra_visivel_cliente" value="1" class="mt-1" @checked(old('extra_visivel_cliente', ! session()->hasOldInput()))>
+        <span><b>Mostrar ao cliente</b> no link de acompanhamento. Desmarque para anotações internas.</span>
+    </label>
+
     <div class="flex flex-col gap-1">
         <label for="extra_fotos" class="{{ $rotuloExtra }}">@lang('service_order::app.extras.fotos')</label>
         <input type="file" id="extra_fotos" name="extra_fotos[]" accept="image/*" multiple class="w-full text-sm text-gray-700 dark:text-gray-300">

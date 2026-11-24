@@ -84,6 +84,7 @@ class ExtrasOs
             $validos('extra_fotos'),
             $validos('extra_videos'),
             $validos('extra_arquivos'),
+            $request->boolean('extra_visivel_cliente'),
         );
     }
 
@@ -92,7 +93,7 @@ class ExtrasOs
      * @param  UploadedFile[]  $videos
      * @param  UploadedFile[]  $arquivos
      */
-    public function registrar(ServiceOrder $os, ?string $titulo, ?string $texto, array $fotos = [], array $videos = [], array $arquivos = []): ?ServiceOrderExtra
+    public function registrar(ServiceOrder $os, ?string $titulo, ?string $texto, array $fotos = [], array $videos = [], array $arquivos = [], bool $visivelCliente = false): ?ServiceOrderExtra
     {
         $titulo = $titulo !== null ? trim($titulo) : null;
         $texto = $texto !== null ? trim($texto) : null;
@@ -114,13 +115,20 @@ class ExtrasOs
             }
         }
 
-        $extra = ServiceOrderExtra::create([
+        $dados = [
             'quote_id' => $os->id,
             'user_id' => auth()->guard('user')->id(),
             'titulo' => $titulo !== '' ? $titulo : null,
             'texto' => $texto !== '' ? $texto : null,
             'arquivos' => $guardados ?: null,
-        ]);
+        ];
+
+        // Servidor que ainda não rodou a migration segue funcionando (sem a marcação).
+        if (\Illuminate\Support\Facades\Schema::hasColumn('service_order_extras', 'visivel_cliente')) {
+            $dados['visivel_cliente'] = $visivelCliente;
+        }
+
+        $extra = ServiceOrderExtra::create($dados);
 
         ServiceOrderEvent::record($os, 'extra_adicionado', [
             'titulo' => $extra->titulo,

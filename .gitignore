@@ -36,3 +36,4 @@ local.properties
 promo/fotos/*.jpg
 promo/fotos/seq-*/
 promo/caminhao/node_modules/
+promo/ia/rua/

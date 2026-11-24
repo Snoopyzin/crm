@@ -5,6 +5,7 @@ namespace Webkul\ServiceOrder\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Webkul\ServiceOrder\Models\ServiceOrder;
+use Webkul\ServiceOrder\Services\JornadaCliente;
 
 /**
  * Public, unauthenticated "onde está meu veículo" tracking page -- the link
@@ -20,7 +21,13 @@ class PublicTrackingController extends Controller
             ->with('vehicle')
             ->findOrFail($id);
 
+        $jornada = app(JornadaCliente::class);
+
         return view('service_order::public.tracking', [
+            'jornada' => $jornada->jornada($serviceOrder),
+            'historico' => $jornada->historico($serviceOrder),
+            'anexos' => $jornada->anexos($serviceOrder),
+            'caminhao' => JornadaCliente::caminhao($serviceOrder->vehicle->cor ?? null),
             'serviceOrder' => $serviceOrder,
             'steps' => ServiceOrder::customerTrackingSteps(),
             'currentStep' => $serviceOrder->customerTrackingStepIndex(),
