@@ -29,9 +29,11 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 .row.done{color:var(--ink)}.row.done .st{color:var(--ok)}
 .row.act{background:linear-gradient(135deg,var(--blue),#0A6FB0);color:#fff;box-shadow:0 26px 50px -18px rgba(14,144,217,.85)}
 .tk{position:absolute;left:30px;right:30px;height:128px;border-radius:26px;background:#fff;border:2px solid #E6ECF4;display:flex;align-items:center;gap:22px;padding:0 24px;box-shadow:0 14px 30px -22px rgba(7,26,51,.4)}
-.photo{position:absolute;left:60px;top:560px;width:960px;height:1040px;border-radius:48px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(7,26,51,.5);display:none;opacity:0}
+.photo{position:absolute;left:60px;top:560px;width:960px;height:680px;border-radius:48px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(7,26,51,.5);display:none;opacity:0}
 .photo .pin{position:absolute;inset:0;background-size:cover;background-position:center;transform-origin:50% 40%}
 .photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,26,51,0) 55%,rgba(7,26,51,.35))}
+.bl{height:96px;border-radius:28px;display:flex;align-items:center;gap:20px;padding:0 28px;font-size:30px;font-weight:600;opacity:0}
+.bk{width:44px;height:44px;border-radius:50%;background:#1F9D6B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex:none}
 .mono{font-family:'Chakra Petch',sans-serif}
 .pill{display:inline-block;border-radius:999px;padding:10px 24px;font-weight:700;font-size:28px}
 .kpi{position:absolute;width:465px;height:250px;padding:34px 38px}
@@ -123,6 +125,11 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
   <div class="sc" id="s6">
     <div class="h" id="t6" style="position:absolute;left:60px;top:150px;width:960px"><span class="word">No</span> <b><span class="word">celular.</span></b></div>
     <div id="cap6" style="position:absolute;left:60px;top:330px;width:900px;font-size:46px;line-height:1.3;color:var(--mut);opacity:0">O mecânico registra o serviço <b style="color:var(--ink)">na hora</b>, direto da oficina.</div>
+    <div id="b6" style="display:none">
+      <div class="card bl" style="left:430px;top:1290px;width:590px"><span class="bk">✓</span>Minhas tarefas do dia</div>
+      <div class="card bl" style="left:430px;top:1410px;width:590px"><span class="bk">✓</span>Sem ver valores financeiros</div>
+      <div class="card bl" style="left:430px;top:1530px;width:590px"><span class="bk">✓</span>Serviço concluído na hora</div>
+    </div>
     <div id="halo6" style="position:absolute;left:-40px;top:760px;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(14,144,217,.22),rgba(14,144,217,0) 70%);opacity:0"></div>
     <div id="ph6" class="photo"><div class="pin"></div></div>
     <svg id="mech" viewBox="0 0 520 1100" style="position:absolute;left:20px;top:620px;width:520px;height:1100px;opacity:0;overflow:visible">
@@ -434,9 +441,11 @@ function render(t){
     $('mech').style.display='none'; $('halo6').style.display='none';
     const ph=$('ph6'); ph.style.display='block'; rise(ph,lt,.4,.9,80);
     ph.querySelector('.pin').style.transform=`scale(${1.02+0.07*clamp(lt/4.8)})`;
-    $('phone6w').style.transform='translate(324px,571px) scale(.66)';
+    $('phone6w').style.transform='translate(-296px,631px) scale(.66)';
+    $('b6').style.display='block';
+    [0,1,2].forEach(i=>rise($('b6').children[i],lt,1.4+i*.3,.55,40));
   } else {
-    $('mech').style.display='block'; $('halo6').style.display='block';
+    $('mech').style.display='block'; $('halo6').style.display='block'; $('b6').style.display='none';
     $('ph6').style.display='none';
     $('phone6w').style.transform='none';
     rise($('mech'),lt,.5,.8,80);
@@ -477,10 +486,14 @@ function render(t){
     $('owner').style.display='none';
     const ph=$('ph7'); ph.style.display='block'; rise(ph,lt,.4,.9,80);
     ph.querySelector('.pin').style.transform=`scale(${1.02+0.07*clamp(lt/4.6)})`;
-    $('mon7w').style.transform='translate(81px,108px) scale(.95)';
+    $('mon7w').style.transform='translate(44px,332px) scale(.8)';
+    const ca=$('chipA'), cb=$('chipB');
+    ca.style.left='600px'; ca.style.top='1330px'; ca.style.width='420px'; cb.style.left='600px'; cb.style.top='1460px'; cb.style.width='420px';
   } else {
     $('owner').style.display='block'; $('ph7').style.display='none';
     $('mon7w').style.transform='none';
+    const ca2=$('chipA'), cb2=$('chipB');
+    ca2.style.left='60px'; ca2.style.top='560px'; ca2.style.width='560px'; cb2.style.left='130px'; cb2.style.top='700px'; cb2.style.width='600px';
     rise($('owner'),lt,.6,.8,80);
     $('owner').style.transform += ` translateY(${Math.sin(lt*2)*4}px)`;
     $('ownerMug').setAttribute('transform',`rotate(${Math.sin(lt*1.6)*2.2} 318 560)`);
