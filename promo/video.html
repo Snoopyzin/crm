@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Volmaster CRM — vídeo de apresentação</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#071A33;--navy2:#0B2447;--blue:#0E90D9;--ink:#0F1F36;--mut:#5F7088;--line:#DFE7F1;--ok:#1F9D6B;--warn:#E8A317;--bad:#D6303B}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Inter,sans-serif;color:var(--ink)}
+.layer{position:absolute;inset:0}
+#bgDark{background:radial-gradient(900px 700px at 15% 12%,rgba(14,144,217,.45),transparent 60%),radial-gradient(800px 800px at 95% 95%,rgba(11,62,122,.8),transparent 60%),var(--navy)}
+#bgLight{background:radial-gradient(900px 800px at 0% 0%,#CFE8FA 0%,transparent 60%),radial-gradient(900px 900px at 100% 30%,#E5E1FA 0%,transparent 60%),radial-gradient(900px 700px at 20% 100%,#D3EAF8 0%,transparent 60%),#F5F8FD}
+.hex{position:absolute;inset:0;opacity:.9;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='112' height='196' viewBox='0 0 56 98'><path d='M28 2 54 17v30L28 62 2 47V17zM28 64l26 15v30M28 64 2 79v30' fill='none' stroke='white' stroke-opacity='.07' stroke-width='1.2'/></svg>");-webkit-mask-image:linear-gradient(160deg,#000 0%,transparent 70%)}
+.sc{position:absolute;inset:0;opacity:0}
+.h{font-family:'Chakra Petch',sans-serif;font-weight:300;font-size:118px;line-height:1.02;letter-spacing:-.01em;color:var(--ink)}
+.h b{font-weight:700}
+.h.w{color:#fff}
+.word{display:inline-block;opacity:0;will-change:transform,filter}
+.card{background:#fff;border-radius:34px;box-shadow:0 2px 4px rgba(7,26,51,.04),0 30px 70px -28px rgba(7,26,51,.25);position:absolute}
+.plate{display:inline-flex;flex-direction:column;align-items:center;background:#fff;border:5px solid #101820;border-radius:14px;overflow:hidden;font-family:'Chakra Petch',sans-serif;font-weight:700;line-height:1}
+.plate i{display:block;width:100%;background:#1B4FD6;color:#fff;font-style:normal;font-size:15px;letter-spacing:.2em;text-align:center;padding:4px 0 3px}
+.plate b{font-size:44px;padding:8px 22px 6px;color:#101820;letter-spacing:.04em}
+.plate.sm b{font-size:30px;padding:6px 16px 4px}.plate.sm i{font-size:11px;padding:3px 0 2px}
+.ic{width:46px;height:46px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.row{position:absolute;left:60px;width:960px;height:100px;border-radius:26px;display:flex;align-items:center;gap:26px;padding:0 34px;font-size:38px;font-weight:600;background:#fff;color:var(--mut);box-shadow:0 18px 40px -26px rgba(7,26,51,.35)}
+.row .st{margin-left:auto;display:flex;align-items:center}
+.row.done{color:var(--ink)}.row.done .st{color:var(--ok)}
+.row.act{background:linear-gradient(135deg,var(--blue),#0A6FB0);color:#fff;box-shadow:0 26px 50px -18px rgba(14,144,217,.85)}
+.mono{font-family:'Chakra Petch',sans-serif}
+.pill{display:inline-block;border-radius:999px;padding:10px 24px;font-weight:700;font-size:28px}
+.kpi{position:absolute;width:465px;height:250px;padding:34px 38px}
+.kpi small{display:block;font-size:26px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.kpi div{font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:70px;margin-top:22px;letter-spacing:-.02em}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="bgDark"><div class="hex"></div></div>
+  <div class="layer" id="bgLight" style="opacity:0"></div>
+
+  <!-- CENA 1: abertura -->
+  <div class="sc" id="s1">
+    <img id="logo1" src="logo-branco.svg" style="position:absolute;left:260px;top:430px;width:560px">
+    <div class="h w" id="t1" style="position:absolute;left:80px;top:870px;width:920px;text-align:center">
+      <span class="word">Sua</span> <span class="word">oficina</span><br><b><span class="word">sob</span> <span class="word">controle.</span></b>
+    </div>
+    <div id="t1b" class="mono" style="position:absolute;left:0;top:1260px;width:1080px;text-align:center;font-size:48px;font-weight:500;color:#5DB8EE;letter-spacing:.04em;opacity:0">do orçamento à entrega</div>
+  </div>
+
+  <!-- CENA 2: etapas -->
+  <div class="sc" id="s2">
+    <div class="h" id="t2" style="position:absolute;left:60px;top:150px;width:960px"><span class="word">Cada</span> <span class="word">caminhão.</span><br><b><span class="word">Cada</span> <span class="word">etapa.</span></b></div>
+    <div id="rows2"></div>
+  </div>
+
+  <!-- CENA 3: orçamento -->
+  <div class="sc" id="s3">
+    <div class="h" id="t3" style="position:absolute;left:60px;top:150px;width:960px"><span class="word">Orçamento</span><br><b><span class="word">em</span> <span class="word">minutos.</span></b></div>
+    <div class="card" id="c3" style="left:60px;top:560px;width:960px;height:1080px;opacity:0">
+      <div style="display:flex;align-items:center;gap:26px;padding:40px 44px;border-bottom:2px solid var(--line)">
+        <div class="plate sm"><i>BRASIL</i><b>QWE-4F55</b></div>
+        <div><div class="mono" style="font-size:40px;font-weight:700">OS #1042</div><div style="font-size:28px;color:var(--mut);margin-top:6px">Transportes Alvorada</div></div>
+        <span class="pill" style="margin-left:auto;background:#E3F1FB;color:#0A6FB0">Orçamento</span>
+      </div>
+      <div id="items3" style="padding:14px 44px 0"></div>
+      <div id="total3" style="position:absolute;left:44px;right:44px;top:668px;display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid var(--line);padding-top:30px">
+        <span style="font-size:34px;font-weight:600;color:var(--mut)">Total</span>
+        <span class="mono" id="totalv" style="font-size:84px;font-weight:700;letter-spacing:-.02em">R$ 0,00</span>
+      </div>
+      <div id="wa" style="position:absolute;left:44px;right:44px;top:870px;height:120px;border-radius:30px;background:#1FA855;color:#fff;font-size:40px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:18px;opacity:0;box-shadow:0 26px 50px -20px rgba(31,168,85,.8)">
+        <svg class="ic" viewBox="0 0 24 24" style="stroke:#fff"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.3 18.7z"/><path d="M9 9.5c.5 2.5 2.5 4.5 5 5l1.2-1.2-1.8-1-.9.6c-.8-.4-1.5-1.1-1.9-1.9l.6-.9-1-1.8z"/></svg>
+        Enviar no WhatsApp
+      </div>
+    </div>
+    <div id="toast3" style="position:absolute;left:110px;top:1700px;width:860px;height:130px;border-radius:30px;background:var(--navy);color:#fff;display:flex;align-items:center;gap:26px;padding:0 40px;font-size:36px;font-weight:600;opacity:0;box-shadow:0 30px 60px -20px rgba(7,26,51,.7)">
+      <span style="width:62px;height:62px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center"><svg class="ic" viewBox="0 0 24 24" style="stroke:#fff;stroke-width:2.4;width:36px;height:36px"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+      Orçamento enviado ao cliente
+    </div>
+  </div>
+
+  <!-- CENA 4: pátio e alertas -->
+  <div class="sc" id="s4">
+    <div class="h" id="t4" style="position:absolute;left:60px;top:150px;width:960px"><span class="word">Prazo</span><br><b><span class="word">à</span> <span class="word">vista.</span></b></div>
+    <div id="cards4"></div>
+    <div id="alert4" style="position:absolute;left:60px;top:1400px;width:960px;height:230px;border-radius:34px;background:var(--navy);color:#fff;display:flex;align-items:center;gap:30px;padding:0 44px;opacity:0;box-shadow:0 40px 80px -24px rgba(7,26,51,.8)">
+      <span id="bell" style="width:104px;height:104px;border-radius:50%;background:var(--bad);display:flex;align-items:center;justify-content:center;flex:none">
+        <svg class="ic" viewBox="0 0 24 24" style="stroke:#fff;width:56px;height:56px"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </span>
+      <div><div class="mono" style="font-size:30px;letter-spacing:.14em;color:#FF8A92;font-weight:700">ALERTA CRÍTICO</div>
+      <div style="font-size:38px;font-weight:600;margin-top:10px;line-height:1.2">OS #1042 passou do prazo de Operação</div></div>
+    </div>
+  </div>
+
+  <!-- CENA 5: painel do dono -->
+  <div class="sc" id="s5">
+    <div class="h" id="t5" style="position:absolute;left:60px;top:150px;width:960px"><span class="word">O</span> <span class="word">dono</span><br><b><span class="word">vê</span> <span class="word">tudo.</span></b></div>
+    <div class="card kpi" id="k1" style="left:60px;top:560px"><small>Faturamento</small><div id="k1v">R$ 0</div></div>
+    <div class="card kpi" id="k2" style="left:555px;top:560px"><small>Ticket médio</small><div id="k2v">R$ 0</div></div>
+    <div class="card kpi" id="k3" style="left:60px;top:840px"><small>Caminhões entregues</small><div id="k3v">0</div></div>
+    <div class="card kpi" id="k4" style="left:555px;top:840px"><small>Indicadores no alvo</small><div id="k4v" style="color:var(--ok)">0%</div></div>
+    <div class="card" id="k5" style="left:60px;top:1120px;width:960px;height:560px;padding:38px 44px">
+      <div style="font-size:30px;font-weight:600;color:var(--mut)">Faturamento no mês</div>
+      <svg id="chart" viewBox="0 0 872 380" style="width:872px;height:380px;margin-top:18px;overflow:visible">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E90D9" stop-opacity=".32"/><stop offset="1" stop-color="#0E90D9" stop-opacity="0"/></linearGradient>
+        <clipPath id="cp"><rect id="cpr" x="0" y="-10" width="0" height="400"/></clipPath></defs>
+        <g stroke="#E6ECF4" stroke-width="2"><path d="M0 60H872M0 160H872M0 260H872M0 360H872"/></g>
+        <g clip-path="url(#cp)">
+          <path id="area" d="M0 330 C90 320 140 300 210 290 S340 250 410 235 S540 190 610 150 S760 80 872 30 V380 H0Z" fill="url(#g)"/>
+          <path d="M0 330 C90 320 140 300 210 290 S340 250 410 235 S540 190 610 150 S760 80 872 30" fill="none" stroke="#0E90D9" stroke-width="8" stroke-linecap="round"/>
+        </g>
+        <circle id="dot" r="14" fill="#fff" stroke="#0E90D9" stroke-width="7" cx="0" cy="330" opacity="0"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- CENA 6: fechamento -->
+  <div class="sc" id="s6">
+    <img id="logo6" src="logo-branco.svg" style="position:absolute;left:290px;top:560px;width:500px">
+    <div class="h w" id="t6" style="position:absolute;left:60px;top:1000px;width:960px;text-align:center;font-size:104px"><span class="word">Tudo</span> <span class="word">em</span> <span class="word">um</span><br><b><span class="word">só</span> <span class="word">lugar.</span></b></div>
+    <div id="url6" class="mono" style="position:absolute;left:0;top:1420px;width:1080px;text-align:center;font-size:50px;font-weight:600;letter-spacing:.06em;color:#5DB8EE;opacity:0">volmastercrm.com</div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (x,a=0,b=1) => Math.min(b,Math.max(a,x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x<.5 ? 4*x*x*x : 1 - Math.pow(-2*x+2,3)/2; };
+const fmt = (v, d=2) => v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+const ICONS = {
+  cadastro:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M19 8v6M16 11h6"/>',
+  os:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/>',
+  diag:'<rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M5 11h3l1.5-3 3 6 1.5-3H19"/>',
+  orc:'<rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M8.5 6.5h7"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h.01M12 18h.01M15.5 18h.01"/>',
+  neg:'<path d="M4 8h14l-3-3"/><path d="M20 16H6l3 3"/>',
+  exec:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  teste:'<path d="M3.5 17a8.5 8.5 0 0 1 17 0"/><circle cx="12" cy="17" r="1.3"/><path d="m12.8 16 3.2-6"/><path d="M12 8.5v1M6.7 10.7l.7.7M17.3 10.7l-.7.7"/>',
+  fat:'<path d="M5 3v18l2.5-1.5L10 21l2-1.5 2 1.5 2.5-1.5L19 21V3l-2.5 1.5L14 3l-2 1.5L10 3 7.5 4.5z"/><path d="M9 9h6M9 13h6"/>',
+  pos:'<path d="M12 3 4.5 6v5.5c0 4.5 3.1 8 7.5 9.5 4.4-1.5 7.5-5 7.5-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/>'
+};
+const ETAPAS = [['cadastro','Cadastro do cliente'],['os','Ordem de Serviço'],['diag','Diagnóstico'],['orc','Orçamento'],['neg','Negociação'],['exec','Em execução'],['teste','Veículo em teste'],['fat','Faturamento'],['pos','Pós-venda']];
+const svg = k => `<svg class="ic" viewBox="0 0 24 24">${ICONS[k]}</svg>`;
+
+// monta cena 2
+const rows2 = $('rows2');
+ETAPAS.forEach(([k,n],i)=>{
+  const d=document.createElement('div'); d.className='row'; d.style.top=(560+i*116)+'px'; d.id='r'+i;
+  d.innerHTML = svg(k)+`<span>${n}</span><span class="st" id="st${i}"></span>`;
+  rows2.appendChild(d);
+});
+const CHECK='<svg class="ic" viewBox="0 0 24 24" style="stroke-width:2.6"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+const PLATE='<div class="plate sm" style="border-color:#fff"><i style="background:#fff;color:#0A6FB0">BRASIL</i><b style="color:#0A6FB0;background:#fff">QWE-4F55</b></div>';
+
+// monta cena 3 (itens)
+const ITEMS=[['Diagnóstico completo',450],['Troca de embreagem',1890],['Kit de filtros',640],['Mão de obra',1200]];
+ITEMS.forEach(([n,v],i)=>{
+  const d=document.createElement('div'); d.id='it'+i;
+  d.style.cssText='display:flex;justify-content:space-between;align-items:center;height:118px;border-bottom:2px solid #EEF2F8;font-size:38px;font-weight:500;opacity:0';
+  d.innerHTML=`<span>${n}</span><span class="mono" style="font-weight:600">R$ ${fmt(v)}</span>`;
+  $('items3').appendChild(d);
+});
+
+// monta cena 4 (cards do pátio)
+const CARDS=[['ABC-1D23','Frota Nordeste','Em execução · 1 d 2 h','#1F9D6B','#E5F6EE','No prazo'],['RIO-9A88','Auto Peças Duarte','Orçamento · 80% do prazo','#E8A317','#FCF1D6','Atenção'],['QWE-4F55','Transportes Alvorada','Operação · 3 h de atraso','#D6303B','#FBE3E5','Atrasado']];
+CARDS.forEach(([pl,cl,tx,cor,bg,tag],i)=>{
+  const d=document.createElement('div'); d.className='card'; d.id='pc'+i;
+  d.style.cssText=`left:60px;top:${560+i*270}px;width:960px;height:236px;overflow:hidden;opacity:0;display:flex;align-items:center;gap:34px;padding:0 44px 0 52px`;
+  d.innerHTML=`<div style="position:absolute;left:0;top:0;bottom:0;width:18px;background:${cor}"></div>
+  <div class="plate"><i>BRASIL</i><b>${pl}</b></div>
+  <div style="flex:1"><div class="mono" style="font-size:42px;font-weight:700">${cl}</div><div style="font-size:30px;color:var(--mut);margin-top:10px">${tx}</div></div>
+  <span class="pill" style="background:${bg};color:${cor}">${tag}</span>`;
+  $('cards4').appendChild(d);
+});
+
+// ---------- linha do tempo ----------
+const T = {s1:[0,3.4], s2:[3.2,7.2], s3:[7.0,11.6], s4:[11.4,15.0], s5:[14.8,18.2], s6:[18.0,21]};
+const DUR = 21;
+
+function words(el, lt, start, step=.13){
+  el.querySelectorAll('.word').forEach((w,i)=>{
+    const p = eo((lt-start-i*step)/.7);
+    w.style.opacity = p;
+    w.style.filter = `blur(${(1-p)*18}px)`;
+    w.style.transform = `translateY(${(1-p)*46}px)`;
+  });
+}
+function rise(el, lt, d, dur=.7, dy=70, scaleFrom=1){
+  const p = eo((lt-d)/dur);
+  el.style.opacity = p;
+  el.style.transform = `translateY(${(1-p)*dy}px) scale(${scaleFrom+(1-scaleFrom)*p})`;
+  return p;
+}
+function scene(id, t, fi=.45, fo=.45){
+  const [a,b]=T[id], el=$(id);
+  const op = clamp((t-a)/fi) * clamp((b-t)/fo);
+  el.style.opacity = op;
+  el.style.display = op<=0 ? 'none' : 'block';
+  el.style.transform = `scale(${1+0.025*clamp((t-a)/(b-a))})`;
+  return t-a;
+}
+
+function render(t){
+  // fundos: escuro nas pontas, claro no meio
+  const light = clamp((t-2.9)/.5) * clamp((18.3-t)/.5);
+  $('bgLight').style.opacity = light;
+
+  // CENA 1
+  let lt = scene('s1',t,.01,.4);
+  { const p=eo(lt/1.1); const l=$('logo1'); l.style.opacity=p; l.style.filter=`blur(${(1-p)*20}px)`; l.style.transform=`scale(${.88+.12*p})`; }
+  words($('t1'),lt,.9);
+  $('t1b').style.opacity = eo((lt-2.0)/.6);
+
+  // CENA 2
+  lt = scene('s2',t);
+  words($('t2'),lt,.1);
+  const act = lt<1.0 ? -1 : Math.min(8, Math.floor((lt-1.0)/.27));
+  for(let i=0;i<9;i++){
+    const r=$('r'+i); rise(r,lt,.35+i*.06,.6,50);
+    r.className='row'+(i<act?' done':i===act?' act':'');
+    $('st'+i).innerHTML = i<act ? CHECK : i===act ? PLATE : '';
+  }
+
+  // CENA 3
+  lt = scene('s3',t);
+  words($('t3'),lt,.1);
+  rise($('c3'),lt,.5,.8,90);
+  let total=0;
+  ITEMS.forEach(([n,v],i)=>{
+    const p = rise($('it'+i),lt,1.0+i*.5,.55,34);
+    total += v*eo((lt-1.0-i*.5)/.6);
+  });
+  $('totalv').textContent = 'R$ '+fmt(total);
+  const wp = eo((lt-3.0)/.5); $('wa').style.opacity=wp;
+  const press = (lt>3.45 && lt<3.65) ? .965 : 1;
+  $('wa').style.transform = `translateY(${(1-wp)*30}px) scale(${press})`;
+  $('wa').style.background = lt>3.5 ? '#178F47' : '#1FA855';
+  rise($('toast3'),lt,3.6,.5,60);
+
+  // CENA 4
+  lt = scene('s4',t);
+  words($('t4'),lt,.1);
+  for(let i=0;i<3;i++){
+    const c=$('pc'+i); rise(c,lt,.5+i*.2,.65,70);
+  }
+  const pulse = lt>1.9 ? 1+0.012*Math.sin((lt-1.9)*9) : 1;
+  $('pc2').style.transform += ` scale(${pulse})`;
+  const ap = eo((lt-1.9)/.55);
+  $('alert4').style.opacity = ap;
+  $('alert4').style.transform = `translateY(${(1-ap)*-140}px)`;
+  const sh = (lt>2.5 && lt<3.1) ? Math.sin((lt-2.5)*60)*10*(1-(lt-2.5)/.6) : 0;
+  $('bell').style.transform = `rotate(${sh}deg)`;
+
+  // CENA 5
+  lt = scene('s5',t);
+  words($('t5'),lt,.1);
+  const tg=[['k1',.5],['k2',.65],['k3',.8],['k4',.95],['k5',1.1]];
+  tg.forEach(([id,d])=>rise($(id),lt,d,.65,70));
+  const c = k => eo((lt-k)/1.1);
+  $('k1v').textContent = 'R$ '+fmt(84320*c(.7),0);
+  $('k2v').textContent = 'R$ '+fmt(2140*c(.85),0);
+  $('k3v').textContent = Math.round(16*c(1.0));
+  $('k4v').textContent = Math.round(72*c(1.15))+'%';
+  const dp = eio((lt-1.3)/1.7);
+  $('cpr').setAttribute('width', 872*dp);
+  const d=$('dot'); d.style.opacity = dp>0.02 ? 1 : 0;
+  // posição do ponto seguindo a curva (aprox. por interpolação de pontos)
+  const pts=[[0,330],[210,290],[410,235],[610,150],[872,30]];
+  const x=872*dp; let y=330;
+  for(let i=0;i<pts.length-1;i++){ if(x>=pts[i][0]&&x<=pts[i+1][0]){ const u=(x-pts[i][0])/(pts[i+1][0]-pts[i][0]); y=pts[i][1]+(pts[i+1][1]-pts[i][1])*eio(u*.9+u*u*.1); break; } }
+  d.setAttribute('cx',x); d.setAttribute('cy',y);
+
+  // CENA 6
+  lt = scene('s6',t,.5,.01);
+  { const p=eo(lt/.9); const l=$('logo6'); l.style.opacity=p; l.style.filter=`blur(${(1-p)*16}px)`; l.style.transform=`scale(${.9+.1*p})`; }
+  words($('t6'),lt,.7);
+  $('url6').style.opacity = eo((lt-1.9)/.6);
+}
+window.render = render; window.DUR = DUR;
+render(0);
+</script>
+</body>
+</html>
