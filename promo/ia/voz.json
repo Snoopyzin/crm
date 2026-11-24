@@ -1,0 +1,32 @@
+[
+ {
+  "arquivo": "/tmp/claude-0/-home-user-crm/e6dc9c34-3cbd-5c27-841a-5c898782b070/scratchpad/voz/fala0.wav",
+  "dur": 5.574,
+  "sr": 22050
+ },
+ {
+  "arquivo": "/tmp/claude-0/-home-user-crm/e6dc9c34-3cbd-5c27-841a-5c898782b070/scratchpad/voz/fala1.wav",
+  "dur": 3.65,
+  "sr": 22050
+ },
+ {
+  "arquivo": "/tmp/claude-0/-home-user-crm/e6dc9c34-3cbd-5c27-841a-5c898782b070/scratchpad/voz/fala2.wav",
+  "dur": 3.908,
+  "sr": 22050
+ },
+ {
+  "arquivo": "/tmp/claude-0/-home-user-crm/e6dc9c34-3cbd-5c27-841a-5c898782b070/scratchpad/voz/fala3.wav",
+  "dur": 1.39,
+  "sr": 22050
+ },
+ {
+  "arquivo": "/tmp/claude-0/-home-user-crm/e6dc9c34-3cbd-5c27-841a-5c898782b070/scratchpad/voz/fala4.wav",
+  "dur": 2.211,
+  "sr": 22050
+ },
+ {
+  "arquivo": "/tmp/claude-0/-home-user-crm/e6dc9c34-3cbd-5c27-841a-5c898782b070/scratchpad/voz/fala5.wav",
+  "dur": 0.851,
+  "sr": 22050
+ }
+]

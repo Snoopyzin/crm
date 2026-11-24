@@ -7,23 +7,29 @@ import wave
 import numpy as np
 
 SR = 44100
-EV = json.load(open(sys.argv[1]))
-DUR = 43.0
+META = json.load(open(sys.argv[1]))
+EV = META['eventos']
+VOZ = META['voz']
+PASTA_VOZ = sys.argv[3]                 # pasta com fala0.wav ... (gerada pelo voz.py)
+DUR = float(META['dur'])
 N = int(SR * DUR)
 rng = np.random.default_rng(3)
 L = np.zeros(N)
 R = np.zeros(N)
+BL = np.zeros(N)   # base musical (recebe 'ducking' enquanto o dono fala)
+BR = np.zeros(N)
 
 
-def add(start, sig, gain=1.0, pan=0.0):
+def add(start, sig, gain=1.0, pan=0.0, bed=False):
     i = int(start * SR)
     if i >= N or i + len(sig) <= 0:
         return
     sig = sig[max(0, -i):]
     i = max(0, i)
     n = min(len(sig), N - i)
-    L[i:i + n] += sig[:n] * gain * np.cos((pan + 1) * np.pi / 4)
-    R[i:i + n] += sig[:n] * gain * np.sin((pan + 1) * np.pi / 4)
+    a, b = (BL, BR) if bed else (L, R)
+    a[i:i + n] += sig[:n] * gain * np.cos((pan + 1) * np.pi / 4)
+    b[i:i + n] += sig[:n] * gain * np.sin((pan + 1) * np.pi / 4)
 
 
 def t_(d):
@@ -94,30 +100,38 @@ def bubble(f):
 # ---------------- base ambiente ----------------
 CH = [([48, 55, 59, 64, 71], 36), ([45, 52, 57, 64, 69], 33), ([41, 48, 55, 60, 69], 29), ([43, 50, 55, 62, 67], 31)]
 t0, i = 0.0, 0
-while t0 < 39.4:
+while t0 < DUR - 3:
     notes, root = CH[i % 4]
     g = 0.34 if t0 > 2 else 0.24
-    add(t0, pad(notes, 6.4), g, -0.6)
-    add(t0, pad(notes, 6.4), g, 0.6)
+    add(t0, pad(notes, 6.4), g, -0.6, bed=True)
+    add(t0, pad(notes, 6.4), g, 0.6, bed=True)
     t = t_(6.6)
     sub = np.sin(2 * np.pi * midi(root - 12) * t) * np.minimum(1, t / 1.2) * np.minimum(1, (6.6 - t) / 1.2)
-    add(t0, sub, 0.05, 0)
+    add(t0, sub, 0.05, 0, bed=True)
     # brilhos agudos esparsos (sensação de IA)
     scale = [notes[2] + 12, notes[3] + 12, notes[4] + 12, notes[1] + 24]
     for k in range(6):
-        add(t0 + 0.6 + k * 0.95, bell(midi(scale[(k * 2 + i) % 4]), 2.2, 2.6, .35), 0.16, rng.uniform(-.8, .8))
+        add(t0 + 0.6 + k * 0.95, bell(midi(scale[(k * 2 + i) % 4]), 2.2, 2.6, .35), 0.16, rng.uniform(-.8, .8), bed=True)
     t0 += 6.0
     i += 1
 # pulso suave a partir da primeira fala
-for k in range(int((39.2 - 2.6) / 1.0)):
+for k in range(int((DUR - 6) / 1.0)):
     t = t_(0.5)
     kick = np.sin(2 * np.pi * np.cumsum(55 + 40 * np.exp(-t * 20)) / SR) * np.exp(-t * 10)
-    add(2.6 + k * 1.0, kick, 0.05, 0)
+    add(2.6 + k * 1.0, kick, 0.05, 0, bed=True)
 
 # ---------------- eventos ----------------
 for e in EV:
     k, t = e['k'], e['t']
-    if k == 'listen':
+    if k == 'voz':
+        with wave.open(f"{PASTA_VOZ}/fala{e['i']}.wav") as w:
+            sr = w.getframerate(); x = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float64) / 32768
+        if sr != SR:
+            x = np.interp(np.arange(int(len(x) * SR / sr)) / SR, np.arange(len(x)) / sr, x)
+        add(t, x, 0.95, 0)
+    elif k == 'whoosh':
+        add(t - .25, whoosh(.9), 0.22, 0)
+    elif k == 'listen':
         add(t, bell(midi(81), .5, 9, .2), 0.16, 0)
         add(t + .09, bell(midi(88), .6, 8, .2), 0.14, 0)
     elif k == 'word':
@@ -148,9 +162,19 @@ for e in EV:
         tt = t_(2.6)
         add(t, np.sin(2 * np.pi * np.cumsum(60 + 70 * np.exp(-tt * 12)) / SR) * np.exp(-2.3 * tt), 0.55, 0)
 
-# transições de cena
-for ts in (5.8, 26.6, 27.5, 34.2, 39.3):
-    add(ts - .25, whoosh(.9), 0.22, 0)
+
+# ---------------- ducking: a música abaixa enquanto o dono fala ----------------
+duck = np.ones(N)
+for v in VOZ:
+    s0, s1 = int((v['t'] - .15) * SR), int((v['t'] + v['dur'] + .25) * SR)
+    ramp = int(.18 * SR)
+    seg = np.ones(N)
+    seg[s0:s1] = 0.42
+    duck = np.minimum(duck, lp(seg, .9995) if False else seg)
+k = np.hanning(int(.25 * SR)); k /= k.sum()
+duck = np.convolve(duck, k, mode='same')
+L += BL * duck
+R += BR * duck
 
 # ---------------- fechamento ----------------
 def room(x, wet=.22):
