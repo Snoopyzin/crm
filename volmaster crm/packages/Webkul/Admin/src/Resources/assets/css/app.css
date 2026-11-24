@@ -847,3 +847,97 @@ html.dark body {
 }
 
 #admin-sidebar a.bg-brandColor [class*="icon-"] { color: #fff !important; }
+
+/* ==========================================================================
+   Volmaster Tech: rodada 2 (todas as telas)
+   ========================================================================== */
+
+/* Título de página: fonte técnica + faixa azul da marca à esquerda */
+.text-xl.font-bold,
+.text-2xl.font-bold,
+.text-3xl.font-bold {
+    font-family: 'Chakra Petch', Inter, sans-serif;
+    letter-spacing: .01em;
+}
+
+.rounded-lg.border:has(> .text-xl.font-bold:first-child),
+.rounded-lg.border:has(> div > .text-xl.font-bold:first-child) {
+    border-left: 4px solid var(--brand-color);
+    background-image: linear-gradient(90deg, rgba(14, 144, 217, .07), transparent 40%);
+}
+
+/* Cards em geral: cantos maiores, borda fria, sombra leve */
+.rounded-lg.border.bg-white,
+.rounded-md.border.bg-white {
+    border-radius: 14px;
+    border-color: var(--vm-line);
+    box-shadow: var(--vm-card-shadow);
+}
+
+html.dark .rounded-lg.border.dark\:bg-gray-900 { box-shadow: none; }
+
+/* Campos: cantos 10px, fundo levemente azulado, foco azul */
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+select,
+textarea {
+    border-radius: 10px !important;
+    border-color: #CBD6E4;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):hover,
+select:hover,
+textarea:hover { border-color: #8EA0B8; }
+
+/* Abas em "pílula" (passos e etapas) */
+.rounded-full.border,
+a.rounded-full,
+button.rounded-full {
+    transition: background .15s, color .15s, box-shadow .15s;
+}
+
+.rounded-full.bg-brandColor,
+.rounded-full.bg-blue-600,
+.rounded-full.bg-blue-500 {
+    background: linear-gradient(135deg, var(--brand-color), #0A6FB0) !important;
+    box-shadow: 0 6px 16px -6px rgba(14, 144, 217, .7);
+    color: #fff;
+}
+
+/* Tabelas (DataGrid e listagens) */
+table thead tr,
+.grid-header,
+.datagrid-head {
+    background: #F2F6FB;
+}
+
+html.dark table thead tr { background: #0F1F36; }
+
+table thead th,
+table thead td {
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #5F7088;
+}
+
+table tbody tr { transition: background .12s; }
+table tbody tr:hover { background: rgba(14, 144, 217, .05); }
+
+/* Quadro de pátio e cards coloridos de status: faixa lateral forte */
+.border-green-300.bg-green-100 { border-left: 5px solid #1F9D6B; border-radius: 12px; }
+.border-yellow-300.bg-yellow-100 { border-left: 5px solid #E8A317; border-radius: 12px; }
+.border-red-300.bg-red-100 { border-left: 5px solid #D6303B; border-radius: 12px; }
+
+/* Selos de status: mais compactos e legíveis */
+.rounded-md.bg-gray-100.px-3,
+.rounded-full.bg-gray-100 { font-weight: 600; }
+
+/* Avisos azuis (ex.: "cada cliente recebe um código") */
+.bg-blue-100, .bg-blue-50 {
+    border-left: 4px solid var(--brand-color);
+    border-radius: 10px;
+}
+
+/* Rodapé "Powered by" e links */
+a { transition: color .12s; }
