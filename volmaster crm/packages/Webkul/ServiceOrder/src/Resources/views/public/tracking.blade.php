@@ -39,7 +39,14 @@
         h1,h2,h3 { font-family:'Chakra Petch',Inter,sans-serif; margin:0; letter-spacing:.01em; }
         .card { background:var(--card); border:1px solid var(--line); border-radius:24px; box-shadow:0 30px 60px -34px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.05); }
 
-        .hero { padding:20px 20px 18px; }
+        .hero { padding:20px 20px 18px; overflow:hidden; }
+        .cena { position:relative; margin:-20px -20px 16px; aspect-ratio:16/9; background:#0a1e3b; overflow:hidden; }
+        .cena video, .cena img { width:100%; height:100%; object-fit:cover; display:block; }
+        .cena::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,15,32,0) 55%, rgba(5,15,32,.78)); pointer-events:none; }
+        .selo { position:absolute; left:14px; bottom:12px; z-index:2; display:inline-flex; align-items:center; gap:8px; background:rgba(8,20,40,.62); border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border-radius:999px; padding:6px 13px 6px 10px; font-size:12.5px; font-weight:600; color:#fff; }
+        .selo i { width:9px; height:9px; border-radius:50%; background:#37d0ff; box-shadow:0 0 0 0 rgba(55,208,255,.7); animation:pulso 1.6s infinite; }
+        .selo.ok i { background:#5be0a6; animation:none; }
+        @keyframes pulso { 70% { box-shadow:0 0 0 8px rgba(55,208,255,0); } 100% { box-shadow:0 0 0 0 rgba(55,208,255,0); } }
         .kicker { font-size:12px; font-weight:700; letter-spacing:.1em; color:#5DB8EE; text-transform:uppercase; }
         .hero h1 { font-size:30px; line-height:1.1; margin:6px 0 6px; }
         .hero p { margin:0; color:#C5D3E6; font-size:15px; line-height:1.45; }
@@ -104,7 +111,7 @@
         .cancelada { text-align:center; padding:50px 20px; } .cancelada h2 { margin:10px 0 6px; font-size:20px; } .cancelada p { color:#C5D3E6; font-size:14px; margin:0; }
         .rodape { text-align:center; margin-top:26px; font-size:12.5px; color:var(--mut); }
 
-        @media (prefers-reduced-motion: reduce) { .caminhao, .feita { transition:none; } .andando .caminhao img, .andando .feita::before { animation:none; } }
+        @media (prefers-reduced-motion: reduce) { .selo i { animation:none; } .caminhao, .feita { transition:none; } .andando .caminhao img, .andando .feita::before { animation:none; } }
     </style>
 </head>
 <body>
@@ -122,6 +129,21 @@
         </div>
     @else
         <div class="card hero">
+            @php
+                $chegou = $concluida || $atual >= 6;
+                $pasta = 'img/caminhoes/';
+            @endphp
+            <div class="cena">
+                @if ($chegou)
+                    <img src="{{ asset($pasta.'chegou-'.$caminhao['slug'].'.jpg') }}" alt="Seu caminhão chegou na oficina">
+                    <span class="selo ok"><i></i>Pronto para você</span>
+                @else
+                    <video id="cena-video" autoplay muted loop playsinline preload="auto" poster="{{ asset($pasta.'rua-'.$caminhao['slug'].'.jpg') }}">
+                        <source src="{{ asset($pasta.'rua-'.$caminhao['slug'].'.mp4') }}" type="video/mp4">
+                    </video>
+                    <span class="selo"><i></i>{{ $etapaAtual['titulo'] }}</span>
+                @endif
+            </div>
             <div class="kicker">OS #{{ $serviceOrder->id }}</div>
             <h1>{{ $concluida ? 'Tudo certo!' : $etapaAtual['titulo'] }}</h1>
             <p>{{ $concluida ? 'Sua ordem de serviço foi concluída. Obrigado pela confiança!' : $etapaAtual['texto'] }}</p>
@@ -225,6 +247,8 @@
                 var alvo = concluida ? {{ $total - 1 }} : atual;
                 var caminhao = document.getElementById('caminhao'), feita = document.getElementById('feita');
                 var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                var video = document.getElementById('cena-video');
+                if (video) { if (reduzir) { video.removeAttribute('autoplay'); video.pause(); } else { var pr = video.play(); if (pr && pr.catch) pr.catch(function () {}); } }
                 function y(i) { return i * ROW + (ROW - caminhao.offsetHeight) / 2; }
                 function pos(i) { caminhao.style.transform = 'translateY(' + y(i) + 'px)'; feita.style.height = (i * ROW) + 'px'; }
                 caminhao.style.transition = 'none'; feita.style.transition = 'none';
