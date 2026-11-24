@@ -58,7 +58,7 @@
                                     :class="{ 'bg-brandColor text-white': activeMenu === '{{ $menuKey }}' || {{ $isMenuActive ? 'true' : 'false' }}, 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-950': !(activeMenu === '{{ $menuKey }}' || {{ $isMenuActive ? 'true' : 'false' }}) }"
                                 >
                                     <div class="flex items-center gap-3">
-                                        <span class="{{ $menuItem->getIcon() }} text-2xl"></span>
+                                        <span data-vm-icon="{{ $menuItem->getKey() }}" class="{{ $menuItem->getIcon() }} text-2xl"></span>
 
                                         <p class="whitespace-nowrap font-semibold">{{ $menuItem->getName() }}</p>
                                     </div>
